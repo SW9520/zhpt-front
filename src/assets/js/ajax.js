@@ -1,35 +1,41 @@
-var ajax = {}
-var axios = require("axios")
-/**
+import axios from 'axios';
+import qs from 'qs'
+var ajax = {};
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'; 
+/** 
+ * ajax.sendPostRequest
  * @param {Object} url
- * @param {Object} param
+ * @param {Object} params
  * @param {Object} success
  * @param {Object} error
  */
-axios.defaults.baseURL = "http://localhost:8080"
-ajax.sendPostRequest = function(url, param, success, error){
-        axios.post(url, param)
-            .then(success)
-            .catch(error);
+ajax.sendPostRequest = function(url, params, success, error) {
+      
+        return new Promise((resolve, reject) => {
+            axios.post(url,qs.stringify(params) )
+                .then(res => {
+                    resolve(res);
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        }).then(success).catch(error);
     },
-    
-/** 
- * 
- * @param {Object} url
- * @param {Object} param
- * @param function success
- * @param function error
- */    
-ajax.sendGetRequest = function(url, success, error) {
-    axios
-        .get(url)
-        .then(response => (this.info = response))
-        .catch(function(error) { // 请求失败处理
-            console.log(error);
-        });
-}
 
+    /** 
+     * ajax.sendGetRequest
+     * @param {Object} url
+     * @param function success
+     * @param function error
+     */
+    ajax.sendGetRequest = function(url, success, error) {
+        return new Promise((resolve, reject) => {
+            axios.get(url).then(res => {
+                resolve(res)
+            }).catch(err => {
+                reject(err)
+            });
+        }).then(success).catch(error);
+    }
 
-export {
-    ajax
-}
+export default ajax;

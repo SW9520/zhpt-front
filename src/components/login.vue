@@ -30,7 +30,7 @@
 <script>
 import { IPUtils } from '@/assets/js/IPUtils.js';
 import $ from 'jquery';
-import { ajax } from '@/assets/js/ajax.js';
+
 //获取当前窗口
 var win = nw.Window.get();
 export default {
@@ -54,6 +54,7 @@ export default {
         win.setPosition('center');
         let ipaddress = IPUtils.getIPAdress();
         win.title = win.title + '['+ipaddress+']'
+       
     },
     methods: {
         onSuccess() {
@@ -61,13 +62,9 @@ export default {
                 var jsonData = this.loginForm;
                 //加密password
                 jsonData.password = this.$md5(this.loginForm.password);
-                console.log(JSON.stringify(jsonData))
                 if (valid) {
-                    ajax.sendPostRequest('http://localhost:8080/login', jsonData, (response) => {
-                        let sid = this.initWebSocket();
-                       ajax.sendGetRequest('http://localhost:8080/hello/'+sid, jsonData, function(response) {
-                         
-                       });
+                   this.$ajax.sendPostRequest('http://localhost:8080/login', jsonData, (response) => {
+                       this.initWebSocket()
                     },function(error){
                         console.log(error)
                     });
@@ -111,7 +108,7 @@ export default {
         initWebSocket() {
             //初始化weosocket
             var sid = new Date().getTime();
-            var webSocket = new WebSocket('ws://localhost:8080/websocket/' + sid);
+            var webSocket = new WebSocket('ws://127.0.0.1:8080/websocket/' + sid);
             webSocket.onopen = this.websocketonopen;
             webSocket.onerror = this.websocketonerror;
             webSocket.onmessage = this.websocketonmessage;
