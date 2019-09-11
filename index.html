@@ -13,6 +13,8 @@
     </body>
 
     <script>
+        var webSocket;
+
         //获取当前窗口
         var win = nw.Window.get();
         //开启开发工具
@@ -31,6 +33,12 @@
                 
             }
         });
+        
+        if ("WebSocket" in window){
+         
+        }else{
+            alert("浏览器不支持webSocket")
+        }
     </script>
 
     <style type="text/css">

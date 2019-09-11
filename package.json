@@ -3,7 +3,7 @@
   "main": "127.0.0.1:80",
   "window": {
     "title": "zhpt-front",
-    "toolbar": true,
+    "toolbar": false,
     "width": 800,
     "height": 400,
     "min_width": 600,
@@ -14,7 +14,7 @@
     "icon": "/static/image/login/logo.png",
     "show_in_taskbar": true,
     "plugin": true,
-    "show":false
+    "show": false
   },
   "webkit": {
     "plugin": true,
@@ -29,15 +29,18 @@
   "author": "SW9520 <hi_sunwen@163.com>",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js --open nw",
-    "start": "npm run dev",
+    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js --open nw  ",
+    "start": "npm run dev ",
     "lint": "eslint --ext .js,.vue src",
     "build": "node build/build.js",
     "dist": "npm run build && build --tasks win-x86 --mirror https://npm.taobao.org/mirrors/nwjs/ ."
   },
   "dependencies": {
     "element-ui": "^2.11.1",
+    "jquery": "^3.4.1",
+    "js-md5": "^0.7.3",
     "vue": "^2.5.2",
+    "vue-monoplasty-slide-verify": "^1.0.5",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
