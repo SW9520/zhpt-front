@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-carousel :height="height" :interval="6000">
-            <el-carousel-item v-for="item in 7" :key="item"><img :src="'../../static/image/login/carousel/' + item + '.jpg'" /></el-carousel-item>
+            <el-carousel-item v-for="item in 7" :key="item"><img class="img" :src="'../../static/image/login/carousel/' + item + '.jpg'" /></el-carousel-item>
         </el-carousel>
 
         <el-card class="box-card">
@@ -14,8 +14,16 @@
                         <el-input type="text" prefix-icon="el-icon-user" placeholder="用户名" autofocus="true" v-model="loginForm.userName"></el-input>
                     </el-form-item>
                     <el-form-item prop="password"><el-input type="password" prefix-icon="el-icon-lock" placeholder="密码" v-model="loginForm.password"></el-input></el-form-item>
-                    <el-form-item prop="keyWord">
-                        <slide-verify :l="42" :r="10" :w="260" :h="100" @success="onSuccess" @fail="onFail" @refresh="onRefresh" :slider-text="text"></slide-verify>
+                    <el-form-item prop="captcha">
+                        <!--    <slide-verify :l="42" :r="10" :w="260" :h="100" @success="onSuccess" @fail="onFail" @refresh="onRefresh" :slider-text="text"></slide-verify> -->
+                        <el-input placeholder="点击图片获取验证码" v-model="loginForm.captcha">
+                            <div slot="suffix"  >
+                                <img :src="imgCodeUrl" @click="changeImgCode" style="width:80px;height: 26px;padding:0.125rem;cursor: pointer;" />
+                            </div>
+                         </el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" style="width:100%" @click="login">登 陆</el-button>
                     </el-form-item>
                     <el-form-item>
                         <el-checkbox size="mini" @change="chooseRememberMe()" v-model="loginForm.rememberMe"><span style="font-size: 0.75rem;">记住密码</span></el-checkbox>
@@ -33,18 +41,22 @@ import $ from 'jquery';
 
 //获取当前窗口
 var win = nw.Window.get();
+
 export default {
     data() {
         return {
             height: '32.1rem',
+            imgCodeUrl: 'http://localhost:8080/getImgCode',
             loginForm: {
                 userName: 'zhangsan',
                 password: '123456',
-                rememberMe: false
+                rememberMe: false,
+                captcha:''
             },
             loginFormRules: {
                 userName: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
-                password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
+                password: [{ required: true, message: '密码不能为空', trigger: 'blur' }],
+                captcha:[{ required: true, message: '验证码不能为空', trigger: 'blur' }]
             },
             text: '向右滑动'
         };
@@ -53,21 +65,41 @@ export default {
         win.resizeTo(1000, 550);
         win.setPosition('center');
         let ipaddress = IPUtils.getIPAdress();
-        win.title = win.title + '['+ipaddress+']'
-       
+        win.title = win.title + '[' + ipaddress + ']';
     },
     methods: {
-        onSuccess() {
+       changeImgCode(){
+           this.imgCodeUrl = this.imgCodeUrl+"?code="+Math.floor(Math.random()*1000000)
+       },
+       login() {
             this.$refs['loginForm'].validate(valid => {
                 var jsonData = this.loginForm;
                 //加密password
                 jsonData.password = this.$md5(this.loginForm.password);
                 if (valid) {
-                   this.$ajax.sendPostRequest('http://localhost:8080/login', jsonData, (response) => {
-                       this.initWebSocket()
-                    },function(error){
-                        console.log(error)
-                    });
+                    this.$ajax.sendPostRequest(
+                        'http://localhost:8080/login',
+                        jsonData,
+                        response => {
+                            console.log(response)
+                            if(response.data.status == 'success'){
+                                  this.initWebSocket();
+                                this.$router.push({ name: 'home' });
+                            }else{
+                                this.$message({
+                                    showClose: true,
+                                    message: response.data.msg,
+                                    type: 'error'
+                                });
+                            }
+                            
+                            
+                          
+                        },
+                        function(error) {
+                            console.log(error);
+                        }
+                    );
                 } else {
                     this.$message({
                         showClose: true,
@@ -78,6 +110,7 @@ export default {
                 }
             });
         },
+       
         onFail() {
             this.$message({
                 showClose: true,
@@ -140,16 +173,16 @@ export default {
     top: 10%;
     right: 6%;
     height: auto;
-    width: auto;
+    width: 18.75rem;
     max-height: 27.1875rem;
-    max-width: 22.875rem;
+    max-width: 23.875rem;
     opacity: 1;
     /* background: #409EFF; */
 }
 .el-card__header {
     padding: 0.625rem 0.625rem;
 }
-img {
+.img {
     width: 100%;
     min-height: 29rem;
     min-width: 50rem;
