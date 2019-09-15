@@ -37,7 +37,7 @@
 
 <script>
 import { IPUtils } from '@/assets/js/IPUtils.js';
-import $ from 'jquery';
+
 
 //获取当前窗口
 var win = nw.Window.get();
@@ -66,10 +66,16 @@ export default {
         win.setPosition('center');
         let ipaddress = IPUtils.getIPAdress();
         win.title = win.title + '[' + ipaddress + ']';
+        
     },
     methods: {
        changeImgCode(){
-           this.imgCodeUrl = this.imgCodeUrl+"?code="+Math.floor(Math.random()*1000000)
+           if(this.imgCodeUrl.indexOf("?") == -1){
+               this.imgCodeUrl = this.imgCodeUrl+"?code="+Math.floor(Math.random()*1000000);
+           }else{
+               this.imgCodeUrl = this.imgCodeUrl.substring(0,this.imgCodeUrl.indexOf("?"))+"?code="+Math.floor(Math.random()*1000000)
+           }
+          
        },
        login() {
             this.$refs['loginForm'].validate(valid => {
@@ -81,7 +87,6 @@ export default {
                         'http://localhost:8080/login',
                         jsonData,
                         response => {
-                            console.log(response)
                             if(response.data.status == 'success'){
                                   this.initWebSocket();
                                 this.$router.push({ name: 'home' });

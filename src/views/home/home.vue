@@ -6,9 +6,8 @@
             </el-header>
             <div class="menuItem">
                 <div class="sideBarDiv">
-                     <el-button type="text" @click="collapseChage" icon="el-icon-d-arrow-left">收起侧边栏</el-button>
+                     <el-button type="text" @click="collapseChage" :icon="buttonIcon">{{buttonTxt}}</el-button>
                 </div>
-               
             </div>
             <el-container>
                 <el-aside width="200px">
@@ -26,14 +25,28 @@
 </template>
 
 <script>
+ import $ from 'jquery';
 export default {
     data() {
         return {
-            isCollapse:false
+            isCollapse:false,
+            buttonTxt:'收起侧边栏',
+            buttonIcon:'el-icon-d-arrow-left'
         };
     },
     methods: {
         collapseChage() {
+            if(this.buttonTxt){
+                 this.buttonTxt=''
+            }else{
+                  this.buttonTxt='收起侧边栏'
+            }
+            if(this.buttonIcon == 'el-icon-d-arrow-left'){
+                 this.buttonIcon='el-icon-d-arrow-right'
+            }else{
+                this.buttonIcon='el-icon-d-arrow-left'
+            }
+            
             this.isCollapse = !this.isCollapse;
             this.$bus.$emit("collapseChage",this.isCollapse);
         }

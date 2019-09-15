@@ -14,6 +14,7 @@ import md5 from 'js-md5';
 import ajax from '@/assets/js/ajax.js';
 import bus from '@/assets/js/eventBus.js'
 
+
 Vue.use(tabRoute)
 Vue.config.productionTip = false
 Vue.use(ElementUI, {
@@ -25,7 +26,6 @@ Vue.use(SlideVerify);
 Vue.prototype.$md5 = md5;
 Vue.prototype.$ajax = ajax;
 Vue.prototype.$bus = bus;
-
 
 
 new Vue({

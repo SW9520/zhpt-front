@@ -1,7 +1,8 @@
 import axios from 'axios';
 import qs from 'qs'
 var ajax = {};
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'; 
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+axios.defaults.withCredentials = true;
 /** 
  * ajax.sendPostRequest
  * @param {Object} url
@@ -10,9 +11,8 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
  * @param {Object} error
  */
 ajax.sendPostRequest = function(url, params, success, error) {
-      
         return new Promise((resolve, reject) => {
-            axios.post(url,qs.stringify(params) )
+            axios.post(url, qs.stringify(params))
                 .then(res => {
                     resolve(res);
                 })
@@ -30,7 +30,10 @@ ajax.sendPostRequest = function(url, params, success, error) {
      */
     ajax.sendGetRequest = function(url, success, error) {
         return new Promise((resolve, reject) => {
-            axios.get(url).then(res => {
+            axios.get(url, {
+                // 单独配置
+                withCredentials: true
+            }).then(res => {
                 resolve(res)
             }).catch(err => {
                 reject(err)
