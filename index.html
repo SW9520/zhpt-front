@@ -13,7 +13,6 @@
     </body>
     <script>
         var webSocket;
-
         //获取当前窗口
         var win = nw.Window.get();
         //开启开发工具
@@ -25,11 +24,11 @@
                   console.log(process.pid)
                   process.exit();
              process.kill(process.pid);
-           
+
                 // 移除关闭监听事件
                 win.removeAllListeners('close');
                 win.close();
-                
+
             }
         });
         if ("WebSocket" in window){

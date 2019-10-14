@@ -10,7 +10,15 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '',
-    proxyTable: {},
+    proxyTable: {
+      '/zhpt-service': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/zhpt-service': ''
+          }
+        }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

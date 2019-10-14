@@ -1,6 +1,6 @@
 <template>
     <div>
-        
+
             <el-header>
                 <headerBar></headerBar>
             </el-header>
@@ -25,39 +25,45 @@
 </template>
 
 <script>
- import $ from 'jquery';
+import $ from 'jquery'
+// 获取当前窗口
+var win = nw.Window.get()
+
 export default {
-    data() {
-        return {
-            isCollapse:false,
-            buttonTxt:'收起侧边栏',
-            buttonIcon:'el-icon-d-arrow-left'
-        };
-    },
-    methods: {
-        collapseChage() {
-            if(this.buttonTxt){
-                 this.buttonTxt=''
-            }else{
-                  this.buttonTxt='收起侧边栏'
-            }
-            if(this.buttonIcon == 'el-icon-d-arrow-left'){
-                 this.buttonIcon='el-icon-d-arrow-right'
-            }else{
-                this.buttonIcon='el-icon-d-arrow-left'
-            }
-            
-            this.isCollapse = !this.isCollapse;
-            this.$bus.$emit("collapseChage",this.isCollapse);
-        }
-    },
-    created() {
-        win.maximize();
-    },
-    mounted(){
-         
+  data () {
+    return {
+      isCollapse: false,
+      buttonTxt: '收起侧边栏',
+      buttonIcon: 'el-icon-d-arrow-left'
     }
-};
+  },
+  methods: {
+    collapseChage () {
+      if (this.buttonTxt) {
+        this.buttonTxt = ''
+      } else {
+        this.buttonTxt = '收起侧边栏'
+      }
+      if (this.buttonIcon == 'el-icon-d-arrow-left') {
+        this.buttonIcon = 'el-icon-d-arrow-right'
+      } else {
+        this.buttonIcon = 'el-icon-d-arrow-left'
+      }
+
+      this.isCollapse = !this.isCollapse
+      this.$bus.$emit('collapseChage', this.isCollapse)
+    }
+  },
+  created () {
+    win.maximize()
+    var list = this.$api.menu.listTopMenu()
+    console.log(list)
+  },
+  mounted () {
+    console.log("#############################################")
+    console.log(this.$cookies.keys())
+  }
+}
 </script>
 
 <style>
@@ -78,7 +84,7 @@ export default {
     text-align: center;
     line-height: 200px;
   }
-  
+
   .el-main {
     background-color: #E4E7EB;
     color: #333;
@@ -96,9 +102,9 @@ export default {
   .sideBarDiv .el-button{
       padding-left:60px
   }
-  
+
     body > .el-container {
     margin-bottom: 40px;
-  } 
-    
+  }
+
 </style>
