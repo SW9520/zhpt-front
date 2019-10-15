@@ -57,11 +57,9 @@ export default {
   created () {
     win.maximize()
     var list = this.$api.menu.listTopMenu()
-    console.log(list)
+
   },
   mounted () {
-    console.log("#############################################")
-    console.log(this.$cookies.keys())
   }
 }
 </script>

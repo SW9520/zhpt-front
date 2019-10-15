@@ -1,16 +1,16 @@
 const User = {
   state: {
     isLogin: false,
-    user: {}
+    userInfo: {}
   },
   mutations: {
-    login(user) {
-      this.state.isLogin = !this.state.isLogin
-      this.state.user = user
+    login(state, user) {
+      state.isLogin = !state.isLogin
+      state.userInfo = user
     },
     loginOut() {
-      this.state.isLogin = !this.state.isLogin
-      this.state.user = {}
+      state.isLogin = !state.isLogin
+      state.userInfo = {}
     }
   },
   getters: {

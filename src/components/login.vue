@@ -171,11 +171,9 @@ export default {
           _that.$router.push({
             name: 'home'
           })
-          // 如果选中rememberMe
-          if (_that.loginForm.rememberMe) {
-            localStorage.setItem(_that.$api.key.USER_SESSION_KEY, response.data.data.encryptUser)
-          }
+          localStorage.setItem(_that.$api.key.USER_SESSION_KEY, response.data.data.encryptUser)
           this.storeLogin(response.data.data)
+          
         } else {
           localStorage.setItem(_that.$api.key.USER_LOGIN_REMEMBERME, false)
           _that.$message({
@@ -188,6 +186,11 @@ export default {
       },
       function (error) {
         console.log(error)
+        _that.$message({
+          showClose: true,
+          message: '验证失败，请重试',
+          type: 'error'
+        })
         _that.changeImgCode()
         localStorage.setItem(_that.$api.key.USER_LOGIN_REMEMBERME, false)
       }
