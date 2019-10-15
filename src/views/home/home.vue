@@ -60,6 +60,7 @@ export default {
 
   },
   mounted () {
+   console.log(sessionStorage.getItem(this.$api.key.USER_SESSION_KEY))
   }
 }
 </script>

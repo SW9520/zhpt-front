@@ -38,218 +38,236 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
-import { IPUtils} from '@/assets/js/IPUtils.js'
-let _that
-// 获取当前窗口
-var win = nw.Window.get()
+  import {
+    mapMutations
+  } from 'vuex'
+  import {
+    IPUtils
+  } from '@/assets/js/IPUtils.js'
+  let _that
+  // 获取当前窗口
+  var win = nw.Window.get()
 
-export default {
-  data () {
-    return {
-      height: '32.1rem',
-      imgCodeUrl: '/zhpt-service/getImgCode',
-      loginForm: {
-        userName: 'zhangsan',
-        password: '123456',
-        rememberMe: true,
-        captcha: ''
-      },
-      loginFormRules: {
-        userName: [{
-          required: true,
-          message: '用户名不能为空',
-          trigger: 'blur'
-        }],
-        password: [{
-          required: true,
-          message: '密码不能为空',
-          trigger: 'blur'
-        }]
-        /* captcha: [{
+  export default {
+    data() {
+      return {
+        height: '32.1rem',
+        imgCodeUrl: '/zhpt-service/getImgCode',
+        loginForm: {
+          userName: 'zhangsan',
+          password: '123456',
+          rememberMe: true,
+          captcha: ''
+        },
+        loginFormRules: {
+          userName: [{
             required: true,
-            message: '验证码不能为空',
+            message: '用户名不能为空',
             trigger: 'blur'
-          }] */
+          }],
+          password: [{
+            required: true,
+            message: '密码不能为空',
+            trigger: 'blur'
+          }]
+          /* captcha: [{
+              required: true,
+              message: '验证码不能为空',
+              trigger: 'blur'
+            }] */
+        },
+        text: '向右滑动'
+      }
+    },
+    beforeCreate() {
+      _that = this
+    },
+    created() {
+      win.resizeTo(1000, 550)
+      win.setPosition('center')
+      let ipaddress = IPUtils.getIPAdress()
+      win.title = win.title + '[' + ipaddress + ']'
+    },
+    mounted() {
+      _that.init()
+    },
+    methods: {
+      ...mapMutations({
+        storeLogin: 'login'
+      }),
+      init() {
+        _that.loginForm.rememberMe = Boolean(localStorage.getItem(_that.$api.key.USER_LOGIN_REMEMBERME))
+        if (_that.$cookies.get(_that.$api.key.LOGIN_NAME_COOKIE)) {
+          _that.loginForm.userName = _that.$cookies.get(_that.$api.key.LOGIN_NAME_COOKIE)
+        }
+        if (_that.loginForm.rememberMe) {
+          _that.loginWithRememberMe()
+        }
       },
-      text: '向右滑动'
-    }
-  },
-  beforeCreate () {
-    _that = this
-  },
-  created () {
-    win.resizeTo(1000, 550)
-    win.setPosition('center')
-    let ipaddress = IPUtils.getIPAdress()
-    win.title = win.title + '[' + ipaddress + ']'
-  },
-  mounted () {
-    _that.init()
-  },
-  methods: {
-    ...mapMutations({storeLogin: 'login'}),
-    init () {
-      _that.loginForm.rememberMe = Boolean(localStorage.getItem(_that.$api.key.USER_LOGIN_REMEMBERME))
-      if (_that.$cookies.get(_that.$api.key.LOGIN_NAME_COOKIE)) {
-        _that.loginForm.userName = _that.$cookies.get(_that.$api.key.LOGIN_NAME_COOKIE)
-      }
-      if (_that.loginForm.rememberMe) {
-        _that.loginWithRememberMe()
-      }
-    },
-    changeImgCode () {
-      if (_that.imgCodeUrl.indexOf('?') == -1) {
-        _that.imgCodeUrl = _that.imgCodeUrl + '?code=' + Math.floor(Math.random() * 1000000)
-      } else {
-        _that.imgCodeUrl = _that.imgCodeUrl.substring(0, _that.imgCodeUrl.indexOf('?')) + '?code=' + Math.floor(Math.random() *
+      changeImgCode() {
+        if (_that.imgCodeUrl.indexOf('?') == -1) {
+          _that.imgCodeUrl = _that.imgCodeUrl + '?code=' + Math.floor(Math.random() * 1000000)
+        } else {
+          _that.imgCodeUrl = _that.imgCodeUrl.substring(0, _that.imgCodeUrl.indexOf('?')) + '?code=' + Math.floor(Math.random() *
             1000000)
-      }
-    },
-    login () {
-      _that.$refs['loginForm'].validate(valid => {
-        var jsonData = _that.loginForm
-        // 加密password
-        jsonData.password = _that.$md5(_that.loginForm.password)
-        if (valid) {
-          _that.$ajax.sendPostRequest(
-            'ZHPT_LOGIN',
-            jsonData,
-            response => {
-              if (response.data.status == 'success') {
-                _that.initWebSocket()
+        }
+      },
+      login() {
+        _that.$refs['loginForm'].validate(valid => {
+          var jsonData = _that.loginForm
+          // 加密password
+          jsonData.password = _that.$md5(_that.loginForm.password)
+          if (valid) {
+            _that.$ajax.sendPostRequest(
+              'ZHPT_LOGIN',
+              jsonData,
+              response => {
+                if (response.data.status == 'success') {
+                  _that.initWebSocket()
+                  _that.$router.push({
+                    name: 'home'
+                  })
+                  // 如果选中rememberMe
+                  if (_that.loginForm.rememberMe) {
+                    localStorage.setItem(_that.$api.key.USER_SESSION_KEY, response.data.data.encryptUser)
+                  }
+                  this.storeLogin(response.data.data)
+                } else {
+                  _that.$message({
+                    showClose: true,
+                    message: response.data.msg || '用户名或密码错误',
+                    type: 'error'
+                  })
+                  _that.changeImgCode()
+                }
+              },
+              function(error) {
+                console.log(error)
+                _that.changeImgCode()
+              }
+            )
+          } else {
+            _that.$message({
+              showClose: true,
+              message: '请输入用户名和密码后再登陆',
+              type: 'error'
+            })
+            _that.changeImgCode()
+            return false
+          }
+        })
+      },
+      loginWithRememberMe() {
+        const loading = this.$loading({
+          lock: true,
+          text: '正在登录，请稍候……',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        let encryptUser = localStorage.getItem(_that.$api.key.USER_SESSION_KEY)
+        if (!encryptUser) {
+          _that.$message({
+            showClose: true,
+            message: '自动登录失败，请重新输入账号密码！',
+            type: 'error'
+          })
+          localStorage.setItem(_that.$api.key.USER_LOGIN_REMEMBERME, false)
+          return
+        }
+        let params = {
+          'encryptUser': encryptUser
+        }
+        _that.$ajax.sendPostRequest('ZHPT_LOGIN_REMEMBER_ME', params, response => {
+            if (response.data.status == 'success') {
+              _that.initWebSocket()
+              localStorage.setItem(_that.$api.key.USER_SESSION_KEY, response.data.data.encryptUser)
+              this.storeLogin(response.data.data)
+
+            } else {
+              localStorage.setItem(_that.$api.key.USER_LOGIN_REMEMBERME, false)
+              _that.$message({
+                showClose: true,
+                message: '验证失败，请重试',
+                type: 'error'
+              })
+              _that.changeImgCode()
+              return
+            }
+            setTimeout(function(){
                 _that.$router.push({
                   name: 'home'
                 })
-                // 如果选中rememberMe
-                if (_that.loginForm.rememberMe) {
-                  localStorage.setItem(_that.$api.key.USER_SESSION_KEY, response.data.data.encryptUser)
-                }
-                this.storeLogin(response.data.data)
-              } else {
-                _that.$message({
-                  showClose: true,
-                  message: response.data.msg || '用户名或密码错误',
-                  type: 'error'
-                })
-                _that.changeImgCode()
-              }
-            },
-            function (error) {
-              console.log(error)
-              _that.changeImgCode()
-            }
-          )
-        } else {
-          _that.$message({
-            showClose: true,
-            message: '请输入用户名和密码后再登陆',
-            type: 'error'
-          })
-          _that.changeImgCode()
-          return false
-        }
-      })
-    },
-    loginWithRememberMe () {
-      let encryptUser = localStorage.getItem(_that.$api.key.USER_SESSION_KEY)
-      if (!encryptUser) {
-        _that.$message({
-          showClose: true,
-          message: '自动登录失败，请重新输入账号密码！',
-          type: 'error'
-        })
-        localStorage.setItem(_that.$api.key.USER_LOGIN_REMEMBERME, false)
-        return
-      }
-      let params = {
-        'encryptUser': encryptUser
-      }
-      _that.$ajax.sendPostRequest('ZHPT_LOGIN_REMEMBER_ME', params, response => {
-        if (response.data.status == 'success') {
-          _that.initWebSocket()
-          _that.$router.push({
-            name: 'home'
-          })
-          localStorage.setItem(_that.$api.key.USER_SESSION_KEY, response.data.data.encryptUser)
-          this.storeLogin(response.data.data)
-          
-        } else {
-          localStorage.setItem(_that.$api.key.USER_LOGIN_REMEMBERME, false)
-          _that.$message({
-            showClose: true,
-            message: '验证失败，请重试',
-            type: 'error'
-          })
-          _that.changeImgCode()
-        }
+                loading.close();
+            },5000)
+          },
+          function(error) {
+            console.log(error)
+            _that.$message({
+              showClose: true,
+              message: '验证失败，请重试',
+              type: 'error'
+            })
+            _that.changeImgCode()
+            localStorage.setItem(_that.$api.key.USER_LOGIN_REMEMBERME, false)
+
+            loading.close();
+          }
+        )
       },
-      function (error) {
-        console.log(error)
+      onFail() {
         _that.$message({
           showClose: true,
           message: '验证失败，请重试',
           type: 'error'
         })
-        _that.changeImgCode()
-        localStorage.setItem(_that.$api.key.USER_LOGIN_REMEMBERME, false)
-      }
-      )
-    },
-    onFail () {
-      _that.$message({
-        showClose: true,
-        message: '验证失败，请重试',
-        type: 'error'
-      })
-    },
-    onRefresh () {
-      _that.$message({
-        showClose: true,
-        message: '正在加载图片，请稍候……',
-        type: 'info'
-      })
-    },
-    chooseRememberMe () {
-      if (_that.loginForm.rememberMe) {
-        _that.$confirm('请确认是否要记住密码（如果您的电脑有多人共同使用，我们不建议您记住密码）？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+      },
+      onRefresh() {
+        _that.$message({
+          showClose: true,
+          message: '正在加载图片，请稍候……',
+          type: 'info'
         })
-          .then(() => {
-            _that.loginForm.rememberMe = true
-            localStorage.setItem(_that.$api.key.USER_LOGIN_REMEMBERME, true)
-          })
-          .catch(() => {
-            _that.loginForm.rememberMe = false
-          })
+      },
+      chooseRememberMe() {
+        if (_that.loginForm.rememberMe) {
+          _that.$confirm('请确认是否要记住密码（如果您的电脑有多人共同使用，我们不建议您记住密码）？', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            })
+            .then(() => {
+              _that.loginForm.rememberMe = true
+              localStorage.setItem(_that.$api.key.USER_LOGIN_REMEMBERME, true)
+            })
+            .catch(() => {
+              _that.loginForm.rememberMe = false
+            })
+        }
+      },
+      initWebSocket() {
+        // 初始化weosocket
+        var sid = new Date().getTime()
+        var webSocket = new WebSocket('ws://127.0.0.1:8080/websocket/' + sid)
+        webSocket.onopen = _that.websocketonopen
+        webSocket.onerror = _that.websocketonerror
+        webSocket.onmessage = _that.websocketonmessage
+        webSocket.onclose = _that.websocketclose
+        return sid
+      },
+      websocketonopen() {
+        console.log('websocketonopen')
+      },
+      websocketonerror(error) {
+        console.log(error)
+      },
+      websocketonmessage(message) {
+        console.log(message.data)
+      },
+      websocketclose() {
+        console.log('websocketclose')
       }
-    },
-    initWebSocket () {
-      // 初始化weosocket
-      var sid = new Date().getTime()
-      var webSocket = new WebSocket('ws://127.0.0.1:8080/websocket/' + sid)
-      webSocket.onopen = _that.websocketonopen
-      webSocket.onerror = _that.websocketonerror
-      webSocket.onmessage = _that.websocketonmessage
-      webSocket.onclose = _that.websocketclose
-      return sid
-    },
-    websocketonopen () {
-      console.log('websocketonopen')
-    },
-    websocketonerror (error) {
-      console.log(error)
-    },
-    websocketonmessage (message) {
-      console.log(message.data)
-    },
-    websocketclose () {
-      console.log('websocketclose')
     }
   }
-}
 </script>
 
 <style scoped="scoped">
