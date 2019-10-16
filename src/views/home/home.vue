@@ -56,11 +56,9 @@ export default {
   },
   created () {
     win.maximize()
-    var list = this.$api.menu.listTopMenu()
-
   },
   mounted () {
-   console.log(sessionStorage.getItem(this.$api.key.USER_SESSION_KEY))
+    var list = this.$api.menu.listTopMenu()
   }
 }
 </script>

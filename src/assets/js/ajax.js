@@ -1,8 +1,12 @@
 import axios from 'axios'
 import qs from 'qs'
-import { Message, MessageBox } from 'element-ui'
+import {
+  Message,
+  MessageBox
+} from 'element-ui'
+import store from '@/store/index.js'
 
-var ajax = axios.create()
+
 
 const serviceUrl = {
   'ZHPT_LOGIN': '/zhpt-service/login',
@@ -10,8 +14,21 @@ const serviceUrl = {
   'ZHPT_LIST_TOP_MENU': '/zhpt-service/menu/listTopMenu'
 
 }
-ajax.defaults.withCredentials = true
+axios.defaults.withCredentials = true
+// http request 请求拦截器
+axios.interceptors.request.use(config => {
+  if (store.state.User.userInfo && store.state.User.userInfo.sid) {
+    config.headers.common['token'] = store.state.User.userInfo.sid
+  }
+  return config
+}, error => {
+  // 对请求错误做些什么
+  return Promise.reject(error);
+});
 
+
+var ajax = axios.create()
+ajax.$store = store
 /**
  * ajax.sendPostRequest
  * @param {Object} url
@@ -19,7 +36,7 @@ ajax.defaults.withCredentials = true
  * @param {Object} success
  * @param {Object} error
  */
-ajax.sendPostRequest = function (serviceId, params, success, error) {
+ajax.sendPostRequest = function(serviceId, params, success, error) {
   if (serviceUrl.hasOwnProperty(serviceId)) {
     return new Promise((resolve, reject) => {
       axios.post(serviceUrl[serviceId], qs.stringify(params))
@@ -40,12 +57,12 @@ ajax.sendPostRequest = function (serviceId, params, success, error) {
   }
 }
 /**
-   * ajax.sendGetRequest
-   * @param {Object} url
-   * @param function success
-   * @param function error
-   */
-ajax.sendGetRequest = function (serviceId, success, error) {
+ * ajax.sendGetRequest
+ * @param {Object} url
+ * @param function success
+ * @param function error
+ */
+ajax.sendGetRequest = function(serviceId, success, error) {
   if (serviceUrl.hasOwnProperty(serviceId)) {
     return new Promise((resolve, reject) => {
       axios.get(serviceUrl[serviceId], {
