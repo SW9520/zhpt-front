@@ -137,9 +137,6 @@ export default {
             jsonData,
             response => {
               if (response.data.status == 'success') {
-
-
-                _that.initWebSocket()
                 _that.$router.push({
                   name: 'home'
                 })
@@ -147,7 +144,8 @@ export default {
                 if (_that.loginForm.rememberMe) {
                   localStorage.setItem(_that.$api.key.USER_SESSION_KEY, response.data.data.encryptUser)
                 }
-                this.storeLogin(response.data.data)
+                _that.storeLogin(response.data.data)
+                _that.initWebSocket()
               } else {
                 _that.$message({
                   showClose: true,
@@ -199,12 +197,12 @@ export default {
         }
         _that.$ajax.sendPostRequest('ZHPT_LOGIN_REMEMBER_ME', params, response => {
           if (response.data.status == 'success') {
-            _that.initWebSocket()
             localStorage.setItem(_that.$api.key.USER_SESSION_KEY, response.data.data.encryptUser)
             _that.storeLogin(response.data.data)
             _that.$router.push({
               name: 'home'
             })
+             _that.initWebSocket()
           } else {
             localStorage.setItem(_that.$api.key.USER_LOGIN_REMEMBERME, false)
             _that.loginForm.rememberMe = false
@@ -264,7 +262,7 @@ export default {
     },
     initWebSocket () {
       // 初始化weosocket
-      var sid = new Date().getTime()
+      var sid =  _that.$store.state.User.sid
       var webSocket = new WebSocket('ws://127.0.0.1:8080/websocket/' + sid)
       webSocket.onopen = _that.websocketonopen
       webSocket.onerror = _that.websocketonerror

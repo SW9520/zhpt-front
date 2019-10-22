@@ -12,8 +12,9 @@ import bus from '@/assets/js/eventBus.js'
 import api from './api.js'
 import VueCookies from 'vue-cookies'
 import store from '@/store/index.js'
+import iconPicker from 'vue-fontawesome-elementui-icon-picker';
 
-
+Vue.use(iconPicker)
 Vue.use(VueCookies)
 Vue.use(tabRoute)
 Vue.config.productionTip = false

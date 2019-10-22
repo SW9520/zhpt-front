@@ -7,6 +7,8 @@ menu.listTopMenu = () => {
   let param = {'user': user}
   api.ajax.sendPostRequest('ZHPT_LIST_TOP_MENU', param, (response) => {
     return response
+  }, err => {
+     console.error(err)
   })
 }
 
