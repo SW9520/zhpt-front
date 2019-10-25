@@ -10,8 +10,8 @@ var loadingInstance = null
 const serviceUrl = {
   'ZHPT_LOGIN': '/zhpt-service/login',
   'ZHPT_LOGIN_REMEMBER_ME': '/zhpt-service/loginWithRememberMe',
-  'ZHPT_LIST_TOP_MENU': '/zhpt-service/menu/listTopMenu'
-
+  'ZHPT_LIST_TOP_MENU': '/zhpt-service/menu/listTopMenu',
+  'ZHPT_INSERT_MENU': '/zhpt-service/menu/insertMenu'
 }
 axios.defaults.withCredentials = true
 // http request 请求拦截器
@@ -20,7 +20,7 @@ axios.interceptors.request.use(config => {
     text: "正在加载……"
   })
   if (store.state.User.userInfo && store.state.User.userInfo.sid) {
-    config.headers.common['token'] = store.state.User.userInfo.sid
+    config.headers.common['TOKEN'] = store.state.User.userInfo.sid
   }
   return config
 }, error => {
@@ -28,23 +28,27 @@ axios.interceptors.request.use(config => {
   if (loadingInstance) {
     loadingInstance.close()
   }
-  // 对请求错误做些什么
+
   return Promise.reject(error)
 
 });
 
 axios.interceptors.response.use(
   response => {
+    if(response.data.status == "failed" ){
+      MessageBox.alert( '<i class="el-icon-error" style="color:#F56C6C;font-size:20px"></i><span style="color:#F56C6C">' + response.data.msg +"</span>",{
+         dangerouslyUseHTMLString: true
+      })
+    }
     //拦截响应，做统一处理
     if (response.data.code) {
       switch (response.data.code) {
         case 401: //未登录
           Message({
             showClose: true,
-            message: '尊敬的用户，请登录后再进行其他操作……',
+            message: response.data.desc,
             type: 'warning'
           })
-
           store.state.User.isLogin = false
           router.replace({
             path: 'login',
@@ -52,6 +56,12 @@ axios.interceptors.response.use(
               redirect: router.currentRoute.fullPath
             }
           })
+         case 403: //无权限操作
+           Message({
+             showClose: true,
+             message: response.data.desc,
+             type: 'warning'
+           })
       }
     }
     if (loadingInstance) {
@@ -84,7 +94,13 @@ ajax.sendPostRequest = function(serviceId, params, success, error) {
           }
           reject(err)
         })
-    }).then(success).catch(error)
+    }).then(success).catch((err)=>{
+      if(error == null || error == undefined){
+        console.error(err)
+      }else{
+        error(err)
+      }
+    })
 
   } else {
     Message({

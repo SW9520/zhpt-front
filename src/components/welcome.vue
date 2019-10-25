@@ -11,9 +11,7 @@
 import $ from 'jquery';
 
 var os = require('os');
-//获取当前窗口
-var win = nw.Window.get();
-// win.maximize();
+
 
 export default {
     name: 'welcome',
@@ -24,20 +22,21 @@ export default {
     },
     created: function() {
         var p = 0;
-        //显示窗口
-        win.show();
         this.$router.push({ name: 'login' });
-       // let timer = setInterval(() => {
-       //      $('.el-progress-bar__outer').css('border-radius', '0px');
-       //      $('.el-progress-bar__inner').css('border-radius', '0px');
-       //      p = p + 1;
-       //      this.percentage = p;
-       //      if (p == 100) {
-       //          clearInterval(timer);
-       //          this.$router.push({ name: 'login' });
-       //      }
-       //  }, 100);
-        
+      /* let timer = setInterval(() => {
+            $('.el-progress-bar__outer').css('border-radius', '0px');
+            $('.el-progress-bar__inner').css('border-radius', '0px');
+            p = p + 1;
+            this.percentage = p;
+            if (p == 100) {
+                clearInterval(timer);
+                this.$router.push({ name: 'login' });
+            }
+        }, 100); */
+
+    },
+    mounted() {
+      $(".bc").height( `${document.documentElement.clientHeight -8}`)
     }
 };
 </script>
@@ -57,8 +56,6 @@ body {
     background-repeat: no-repeat;
     width: 100%;
     height: 100%;
-    min-height: 24rem;
-    min-width: 50rem;
     overflow: hidden;
 }
 .el-footer {

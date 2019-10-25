@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1.0">
         <title>zhpt-front</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@voerro/vue-tagsinput@2.0.2/dist/style.css">
     </head>
     <body>
         <div id="app"></div>
@@ -13,24 +14,6 @@
     </body>
     <script>
         var webSocket;
-        //获取当前窗口
-        var win = nw.Window.get();
-        //开启开发工具
-        // win.showDevTools()
-        //监听窗口关闭
-        win.on('close', function() {
-            var flag = confirm("是否关闭窗口？")
-            if (flag) {
-                  console.log(process.pid)
-                  process.exit();
-             process.kill(process.pid);
-
-                // 移除关闭监听事件
-                win.removeAllListeners('close');
-                win.close();
-
-            }
-        });
         if ("WebSocket" in window){
         }else{
             alert("浏览器不支持webSocket")

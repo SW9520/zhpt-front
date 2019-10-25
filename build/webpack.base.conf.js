@@ -31,7 +31,7 @@ module.exports = {
       ? config.build.assetsPublicPath
       : config.dev.assetsPublicPath
   },
-  target: 'node-webkit',
+  //target: 'node-webkit', 此处配置是否以nw.js 启动
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {

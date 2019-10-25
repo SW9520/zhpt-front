@@ -13,6 +13,8 @@ import api from './api.js'
 import VueCookies from 'vue-cookies'
 import store from '@/store/index.js'
 import iconPicker from 'vue-fontawesome-elementui-icon-picker';
+import VoerroTagsInput from '@voerro/vue-tagsinput';
+
 
 Vue.use(iconPicker)
 Vue.use(VueCookies)
@@ -22,6 +24,9 @@ Vue.use(ElementUI, {
   size: 'small',
   zIndex: 3000
 })
+
+Vue.component('tags-input', VoerroTagsInput);
+
 
 Vue.prototype.$md5 = md5
 Vue.prototype.$ajax = ajax

@@ -17,6 +17,10 @@ module.exports = {
         pathRewrite: {
           '^/zhpt-service': ''
           }
+        },
+        '/upload':{
+           target: 'http://localhost:8080',
+           changeOrigin: true
         }
     },
 

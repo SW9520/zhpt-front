@@ -1,18 +1,27 @@
 <template>
-  <div>
-       <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick"  :closable= "true"    @tab-remove="handleTabsEdit" >
-          <el-tab-pane label="用户管理" name="first">
+  <div >
+       <el-tabs style="background-color:  rgb(228, 231, 235)!important;" type="border-card" v-model="activeName" @tab-click="handleClick"  :closable= "true"    @tab-remove="handleTabsEdit" >
+          <el-tab-pane label="菜单管理" name="first">
             <menuManage></menuManage>
+          </el-tab-pane>
+          <el-tab-pane label="用户管理" name="second">
+            <userManage></userManage>
           </el-tab-pane>
         </el-tabs>
   </div>
 </template>
 
 <script>
+  import $ from 'jquery';
+
 export default {
+
+  mounted() {
+    $(".el-tab-pane").height( `${document.documentElement.clientHeight -160}`)
+  },
   data () {
     return {
-      activeName: 'first'
+      activeName: 'second'
     }
   },
   methods: {
@@ -43,7 +52,7 @@ export default {
   .el-tabs{
     width: '100%';
   }
-  .el-tab-pane  {
+ /* .el-tab-pane  {
     height: 630px!important;
-  }
+  } */
 </style>

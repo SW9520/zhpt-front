@@ -8,7 +8,7 @@
       </el-row>
     </el-card>
     <br>
-    <el-card class="box-card" style="height: 545px;">
+    <el-card class="box-card main" >
       <treeTable :data="tableData.data" :columns="tableData.columns" border></treeTable>
     </el-card>
 
@@ -19,11 +19,14 @@
 </template>
 <script>
   import addMenu  from './addMenu.vue'
-
+  import $ from 'jquery';
 
   export default {
    components: {
     addMenu
+   },
+   mounted() {
+      $(".main").height( `${document.documentElement.clientHeight -245}`)
    },
     data() {
       return {

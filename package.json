@@ -1,41 +1,17 @@
 {
   "name": "zhpt-front",
-  "main": "127.0.0.1:80",
-  "window": {
-    "title": "zhpt-front",
-    "toolbar": false,
-    "width": 800,
-    "height": 400,
-    "min_width": 600,
-    "min_height": 200,
-    "resizable": true,
-    "frame": true,
-    "kiosk": false,
-    "icon": "/static/image/login/logo.png",
-    "show_in_taskbar": true,
-    "plugin": true,
-    "show": false
-  },
-  "webkit": {
-    "plugin": true,
-    "java": false,
-    "page-cache": false
-  },
-  "nodejs": true,
-  "node-remote": "<all_urls>",
   "chromium-args": "-allow-file-access-from-files",
   "version": "1.0.0",
   "description": "A Vue.js project",
   "author": "SW9520 <hi_sunwen@163.com>",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js  --open nw",
+    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev ",
     "build": "node build/build.js",
     "dist": "npm run build && build --tasks win-x86 --mirror https://npm.taobao.org/mirrors/nwjs/ ."
   },
   "dependencies": {
-    "@voerro/vue-tagsinput": "^2.0.2",
     "axios": "^0.19.0",
     "element-ui": "^2.11.1",
     "font-awesome": "^4.7.0",
@@ -51,6 +27,7 @@
     "vuex": "^3.1.1"
   },
   "devDependencies": {
+    "@voerro/vue-tagsinput": "^2.0.2",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-eslint": "^8.2.1",

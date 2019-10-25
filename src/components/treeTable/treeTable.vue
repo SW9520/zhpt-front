@@ -1,5 +1,5 @@
 <template><!--  @header-click="chooseall" -->
-  <el-table ref="multipleTable" :data="formatData" :row-style="showRow"  :header-cell-style="tableHeaderColor" v-bind="$attrs" stripe height="540px"  >
+  <el-table ref="multipleTable" :data="formatData" :row-style="showRow"  :header-cell-style="tableHeaderColor" v-bind="$attrs" stripe :height="height"  >
     <el-table-column :render-header="renderHeader" width="50" align="center" v-if="checkbox === true">
       <template slot-scope="scope">
        <el-checkbox v-model="scope.row.checks" @change="toselect(scope.row)"></el-checkbox>
@@ -36,12 +36,14 @@
 
 <script>
 import treeToArray from './eval'
+  import $ from 'jquery';
 export default {
   name: 'TreeTable',
   data () {
     return {
       chooseson: true, // 全选
-      key: true // 单个点击直到全部选中
+      key: true ,// 单个点击直到全部选中
+      height: 450
     }
   },
   props: {

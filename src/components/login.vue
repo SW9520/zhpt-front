@@ -58,9 +58,6 @@ import {
   IPUtils
 } from '@/assets/js/IPUtils.js'
 let _that
-// 获取当前窗口
-var win = nw.Window.get()
-
 export default {
   data () {
     return {
@@ -97,20 +94,23 @@ export default {
     _that = this
   },
   created () {
-    win.resizeTo(1000, 550)
-    win.setPosition('center')
     let ipaddress = IPUtils.getIPAdress()
-    win.title = win.title + '[' + ipaddress + ']'
+    this.height = `${document.documentElement.clientHeight}` + 'px';
   },
   mounted () {
     _that.init()
+
   },
   methods: {
     ...mapMutations({
       storeLogin: 'login'
     }),
     init () {
-      _that.loginForm.rememberMe = eval(localStorage.getItem(_that.$api.key.USER_LOGIN_REMEMBERME))
+
+      if(localStorage.getItem(_that.$api.key.USER_LOGIN_REMEMBERME)){
+           _that.loginForm.rememberMe = eval(localStorage.getItem(_that.$api.key.USER_LOGIN_REMEMBERME))
+      }
+
       if (_that.$cookies.get(_that.$api.key.LOGIN_NAME_COOKIE)) {
         _that.loginForm.userName = _that.$cookies.get(_that.$api.key.LOGIN_NAME_COOKIE)
       }
@@ -293,7 +293,7 @@ export default {
 
   .box-card {
     position: absolute;
-    top: 10%;
+    top: 25%;
     right: 6%;
     height: auto;
     width: 18.75rem;

@@ -20,9 +20,6 @@
 
 <script>
   import $ from 'jquery'
-  // 获取当前窗口
-  var win = nw.Window.get()
-
   export default {
     data() {
       return {
@@ -30,7 +27,7 @@
       }
     },
     created() {
-      win.maximize()
+     
     },
     mounted() {
       var list = this.$api.menu.listTopMenu()

@@ -1,8 +1,5 @@
-
-
-
 const route = {}
-route.install = function(vue) { 
+route.install = function(vue) {
 
     vue.component('welcome', (resolve) => {
         require.ensure([], () => resolve(require('@/components/welcome.vue')), 'welcome')
@@ -24,13 +21,16 @@ route.install = function(vue) {
     })
 
     vue.component('menuManage', (resolve) => {
-        require.ensure([], () => resolve(require('@/views/menu/menuManage.vue')), 'menuManage')
+        require.ensure([], () => resolve(require('@/views/admin/menu/menuManage.vue')), 'menuManage')
     })
 
    vue.component('treeTable', (resolve) => {
         require.ensure([], () => resolve(require('@/components/treeTable/treeTable.vue')), 'treeTable')
     })
 
+    vue.component('userManage', (resolve) => {
+        require.ensure([], () => resolve(require('@/views/admin/user/userManage.vue')), 'userManage')
+    })
 }
 
 export default route
