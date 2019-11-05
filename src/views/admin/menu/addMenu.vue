@@ -110,12 +110,15 @@
     },
     props: {
       dialogVisible: {
-        type: Boolean,
-        default: false
+        type: Boolean
       }
     },
     mounted() {
-
+      var param = {}
+      this.$ajax.sendPostRequest("ZHPT_LIST_MENU", param, res => {
+        this.options = this.$api.formatTreeSelectData(res.data.data)
+        console.log(this.options)
+      })
     },
     methods: {
       submitMenu() {
@@ -132,13 +135,15 @@
             shiroPermissions = shiroPermissions.substring(0, shiroPermissions.lastIndexOf(";"))
             this.menuForm.shiroPermissions = shiroPermissions
           }
+           this.menuForm.parentId = this.menuForm.parentId[0];
 
-          this.$ajax.sendPostRequest("ZHPT_INSERT_MENU", this.menuForm, (response) => {
+         this.$ajax.sendPostRequest("ZHPT_INSERT_MENU", this.menuForm, (response) => {
             if (response.data.status == 'success') {
               this.$message({
                 message: '新增成功',
                 type: 'success'
               });
+              this.$parent.listQuery()
             } else {
               this.$message({
                 message: '新增失败',
@@ -147,11 +152,14 @@
             }
           })
           this.$parent.addMenuVisible = false
+
         });
 
       },
       close() {
+        this.$parent.listQuery()
         this.$parent.addMenuVisible = false
+
       }
     }
   }

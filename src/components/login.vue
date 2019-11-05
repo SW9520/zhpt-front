@@ -111,8 +111,8 @@ export default {
            _that.loginForm.rememberMe = eval(localStorage.getItem(_that.$api.key.USER_LOGIN_REMEMBERME))
       }
 
-      if (_that.$cookies.get(_that.$api.key.LOGIN_NAME_COOKIE)) {
-        _that.loginForm.userName = _that.$cookies.get(_that.$api.key.LOGIN_NAME_COOKIE)
+      if (localStorage.getItem(_that.$api.key.LOGIN_NAME_COOKIE)) {
+        _that.loginForm.userName = localStorage.getItem(_that.$api.key.LOGIN_NAME_COOKIE)
       }
       if (_that.loginForm.rememberMe) {
         _that.loginWithRememberMe()
@@ -144,8 +144,14 @@ export default {
                 if (_that.loginForm.rememberMe) {
                   localStorage.setItem(_that.$api.key.USER_SESSION_KEY, response.data.data.encryptUser)
                 }
+                localStorage.setItem(_that.$api.key.LOGIN_NAME_COOKIE,jsonData.userName)
                 _that.storeLogin(response.data.data)
                 _that.initWebSocket()
+                _that.$message({
+                  showClose: true,
+                  message: "登录成功",
+                  type: 'success'
+                })
               } else {
                 _that.$message({
                   showClose: true,
@@ -202,9 +208,15 @@ export default {
             _that.$router.push({
               name: 'home'
             })
+            _that.$message({
+              showClose: true,
+              message: "登录成功",
+              type: 'success'
+            })
              _that.initWebSocket()
           } else {
             localStorage.setItem(_that.$api.key.USER_LOGIN_REMEMBERME, false)
+            localStorage.removeItem(_that.$api.key.LOGIN_NAME_COOKIE)
             _that.loginForm.rememberMe = false
             _that.$message({
               showClose: true,

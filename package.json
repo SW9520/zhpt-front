@@ -17,7 +17,6 @@
     "font-awesome": "^4.7.0",
     "jquery": "^3.4.1",
     "js-md5": "^0.7.3",
-    "nw": "^0.41.2-sdk",
     "portfinder": "^1.0.24",
     "vue": "^2.5.2",
     "vue-cookies": "^1.5.13",

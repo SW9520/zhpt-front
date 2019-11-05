@@ -8,30 +8,31 @@
       </el-row>
     </el-card>
     <br>
-    <el-card class="box-card main" >
-      <treeTable :data="tableData.data" :columns="tableData.columns" border></treeTable>
+    <el-card class="box-card main">
+      <treeTable :data="tableData.data" ref="treeTable" :columns="tableData.columns" border></treeTable>
     </el-card>
 
     <!-- 新增-->
-     <addMenu :dialogVisible="addMenuVisible"></addMenu>
+    <addMenu :dialogVisible="addMenuVisible"></addMenu>
   </div>
 
 </template>
 <script>
-  import addMenu  from './addMenu.vue'
+  import addMenu from './addMenu.vue'
   import $ from 'jquery';
 
   export default {
-   components: {
-    addMenu
-   },
-   mounted() {
-      $(".main").height( `${document.documentElement.clientHeight -245}`)
-   },
+    components: {
+      addMenu
+    },
+    mounted() {
+      $(".main").height(`${document.documentElement.clientHeight -245}`)
+      this.listQuery()
+    },
     data() {
       return {
         addMenuVisible: false,
-        tableData:{
+        tableData: {
           columns: [{
               text: "名称",
               value: "name",
@@ -66,12 +67,57 @@
       addMenu() {
         this.addMenuVisible = true
       },
-      editMenu(){
+      editMenu() {
 
       },
-      delMenu(){
+      delMenu() {
+        let checkedRows = this.$refs.treeTable.getCheckedRow();
+        for (let i = 0; i < checkedRows.length; i++) {
+          let row = checkedRows[i]
+          var param = {id: row.id}
+          this.$ajax.sendPostRequest("ZHPT_DELETE_MENU", param, res => {
+            this.listQuery()
+          })
+        }
 
+      },
+      listQuery() {
+        var param = {}
+        this.$ajax.sendPostRequest("ZHPT_LIST_MENU", param, res => {
+          this.tableData.data = this.formatData(res.data.data)
+        })
+      },
+      formatData(menuList) {
+        var data = []
+        for (let menu of menuList) {
+          let menuId = menu.id;
+          let child = menuList.filter((m) => {
+            return m.parentId === menuId
+          })
+          menu.child = child
+          data.push(menu)
+        }
+        return  this.delRepeatData(null,data)
+      },
+      delRepeatData(list,tableData){
+        if(!list){
+          list = tableData
+        }
+        for(let item of list){
+            if(item.child && item.child.length > 0){
+              for(let children of item.child ){
+                tableData = tableData.filter((m)=>{
+                  return m.id != children.id //去除数组重复的值
+                })
+                if(children.child){
+                 this.delRepeatData(children.child,tableData)
+                }
+              }
+            }
+        }
+        return tableData
       }
+
     },
   }
 </script>

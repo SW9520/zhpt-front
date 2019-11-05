@@ -14,7 +14,10 @@ import VueCookies from 'vue-cookies'
 import store from '@/store/index.js'
 import iconPicker from 'vue-fontawesome-elementui-icon-picker';
 import VoerroTagsInput from '@voerro/vue-tagsinput';
-
+import '../plugins/ztree/js/jquery.ztree.core.min.js'
+import '../plugins/ztree/js/jquery.ztree.excheck.min.js'
+import '../plugins/ztree/js/jquery-1.4.4.min.js'
+import '../plugins/ztree/css/zTreeStyle/zTreeStyle.css'
 
 Vue.use(iconPicker)
 Vue.use(VueCookies)
@@ -26,7 +29,7 @@ Vue.use(ElementUI, {
 })
 
 Vue.component('tags-input', VoerroTagsInput);
-
+Vue.config.devtools = true
 
 Vue.prototype.$md5 = md5
 Vue.prototype.$ajax = ajax

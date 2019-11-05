@@ -31,6 +31,27 @@ route.install = function(vue) {
     vue.component('userManage', (resolve) => {
         require.ensure([], () => resolve(require('@/views/admin/user/userManage.vue')), 'userManage')
     })
+
+    vue.component('roleManage', (resolve) => {
+        require.ensure([], () => resolve(require('@/views/admin/role/roleManage.vue')), 'roleManage')
+    })
+    vue.component('organManage', (resolve) => {
+        require.ensure([], () => resolve(require('@/views/admin/organ/organManage.vue')), 'organManage')
+    })
+
+
+    /* 自定义 页面展示组件*/
+    vue.component('tip', (resolve) => {
+        require.ensure([], () => resolve(require('@/components/tip.vue')), 'tip')
+    })
+
+    vue.component('grid', (resolve) => {
+        require.ensure([], () => resolve(require('@/components/grid.vue')), 'grid')
+    })
+
+    vue.component('menuTree', (resolve) => {
+        require.ensure([], () => resolve(require('@/views/admin/components/menuTree.vue')), 'menuTree')
+    })
 }
 
 export default route

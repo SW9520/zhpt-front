@@ -1,31 +1,31 @@
-<template><!--  @header-click="chooseall" -->
-  <el-table ref="multipleTable" :data="formatData" :row-style="showRow"  :header-cell-style="tableHeaderColor" v-bind="$attrs" stripe :height="height"  >
-    <el-table-column :render-header="renderHeader" width="50" align="center" v-if="checkbox === true">
-      <template slot-scope="scope">
-       <el-checkbox v-model="scope.row.checks" @change="toselect(scope.row)"></el-checkbox>
-      </template>
-
+\<template>
+  <!--  @header-click="chooseall" -->
+  <el-table ref="treeTable" :data="formatData" :row-style="showRow" :header-cell-style="tableHeaderColor" v-bind="$attrs"
+    stripe :height="height">
+    <el-table-column v-if="checkbox == true" :width="40" type="selection">
     </el-table-column>
 
     <!-- 未设置列的情况 -->
     <el-table-column v-if="columns.length===0" width="150">
       <template slot-scope="scope">
         <!--添加空格 -->
-       <span v-for="space in scope.row._level" :key="space" class="ms-tree-space" />
+        <span v-for="space in scope.row._level" :key="space" class="ms-tree-space" />
         <!--图标 -->
         <span v-if="iconShow(0,scope.row)" class="tree-ctrl" @click="toggleExpanded(scope.$index)">
-            <i v-if="!scope.row._expanded" class="el-icon-plus" />
-            <i v-else class="el-icon-minus" />
+          <i v-if="!scope.row._expanded" class="el-icon-arrow-right" />
+          <i v-else class="el-icon-arrow-down" />
         </span>
         {{ scope.$index }}
       </template>
     </el-table-column>
     <el-table-column v-for="(column, index) in columns" v-else :key="column.value" :label="column.text" :width="column.width">
       <template slot-scope="scope">
-        <span v-for="space in scope.row._level" v-if="index === 0" :key="space" class="ms-tree-space" ></span>
+        <span v-for="space in scope.row._level" v-if="index === 0" :key="space" class="ms-tree-space">&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <span v-if="iconShow(index,scope.row)" class="tree-ctrl" @click="toggleExpanded(scope.$index)">
-          <i v-if="!scope.row._expanded" class="el-icon-plus" />
-          <i v-else class="el-icon-minus" />
+
+            <i v-if="!scope.row._expanded" class="el-icon-arrow-right"  />
+            <i v-else class="el-icon-arrow-down" />
+
         </span>
         {{ scope.row[column.value] }}
       </template>
@@ -35,19 +35,19 @@
 </template>
 
 <script>
-import treeToArray from './eval'
+  import treeToArray from './eval'
   import $ from 'jquery';
-export default {
-  name: 'TreeTable',
-  data () {
-    return {
-      chooseson: true, // 全选
-      key: true ,// 单个点击直到全部选中
-      height: 450
-    }
-  },
-  props: {
-    /* eslint-disable */
+  export default {
+    name: 'TreeTable',
+    data() {
+      return {
+        chooseson: true, // 全选
+        key: true, // 单个点击直到全部选中
+        height: 450
+      }
+    },
+    props: {
+      /* eslint-disable */
       data: {
         type: [Array, Object],
         required: true
@@ -77,16 +77,19 @@ export default {
           tmp = this.data;
         }
         const func = this.evalFunc || treeToArray;
-        const args = this.evalArgs ?
-          [tmp, this.expandAll].concat(this.evalArgs) :
-          [tmp, this.expandAll];
+        const args = this.evalArgs ? [tmp, this.expandAll].concat(this.evalArgs) : [tmp, this.expandAll];
         return func.apply(null, args);
       }
     },
     methods: {
-       //设置表头行的样式
-      tableHeaderColor({row,column,rowIndex,columnIndex}){
-          return 'background-color:lightblue;color:#fff;font-wight:300;font-size:14px;text-align:center'
+      //设置表头行的样式
+      tableHeaderColor({
+        row,
+        column,
+        rowIndex,
+        columnIndex
+      }) {
+        return 'background-color:lightblue;color:#fff;font-wight:200;font-size:14px;text-align:center'
       },
       showRow: function(row) {
         const show = row.row.parent ?
@@ -106,112 +109,13 @@ export default {
       iconShow(index, record) {
         return index === 0 && record.child && record.child.length > 0;
       },
-
-      //设置表头全选
-      renderHeader(h, data) {
-        return h("span", [
-          h("el-checkbox", {
-            attrs: {
-              id: "chooseall"
-            }
-          })
-        ]);
-      },
-      //功能函数:选中部分子集
-      setchildtobeselect(arr, key) {
-        arr.forEach((v, i) => {
-          v.checks = key;
-          // v._expanded = key;//选中后展开子项
-          if (v.child) {
-            this.setchildtobeselect(v.child, v.checks);
-          }
-        });
-      },
-      //是否所有的都被选中
-      isallchecked(arr) {
-        arr.forEach((v, i) => {
-          if (!v.checks) {
-            this.key = false;
-          }
-          if (v.child) {
-            this.isallchecked(v.child);
-          }
-        });
-      },
-      //设置父级为 未选中状态（父级的父级没改变-有bug）
-      setparentfalse(arr, id, level) {
-        arr.forEach((v, i) => {
-          if (v._level == level - 1 && v.child) {
-            v.child.forEach((val, ind) => {
-              if (val.id == id) {
-                v.checks = false;
-                return false; //终止此次循环，减少循环次数
-              }
-            });
-          }
-          if (v.child) {
-            this.setparentfalse(v.child, id, level);
-          }
-        });
-      },
-      //设置父级为 选中状态
-      setparenttrue(arr, id, level) {
-        arr.forEach((v, i) => {
-          if (v._level == level - 1 && v.child) {
-            let key = true;
-            let sameidkey = false;
-            v.child.forEach((val, ind) => {
-              if (val.id == id) {
-                //确保当前点击的在该父级内
-                sameidkey = true;
-              }
-              if (!val.checks) {
-                key = false;
-              }
-            });
-            if (key && sameidkey) {
-              v.checks = true;
-            }
-          }
-          if (v.child) {
-            this.setparentfalse(v.child, id, level);
-          }
-        });
-      },
-      //某个复选框被点击时
-      toselect(row) {
-        // row._expanded = row.checks;//选中后是否展开
-        //1、若有子集先让子选中
-        if (row.child) {
-          this.setchildtobeselect(row.child, row.checks);
-        }
-        //2、然后判断是否全选中
-        this.key = true; //重置为true，防止上次已经是false的状态
-        this.isallchecked(this.formatData);
-        //3、设置多选框的状态
-        if (!row.checks) {
-          this.setparentfalse(this.formatData, row.id, row._level); //设置父级选中的状态为false
-          document.getElementById("chooseall").checked = false; //设置全选框的状态
-        } else {
-          this.setparenttrue(this.formatData, row.id, row._level); //设置父级选中的状态为true
-        }
-        if (this.key) {
-          document.getElementById("chooseall").checked = true; //设置全选框的状态
-        }
+      getCheckedRow(){
+          return this.$refs.treeTable.selection;
       }
+
     },
     mounted() {
-      this.$nextTick(() => {
-        var that = this;
-        const all = document.getElementById("chooseall");
-        all.onchange = function(e) {
-          if (e.target.checked == true) {
-            that.setchildtobeselect(that.formatData, true);
-          } else {
-            that.setchildtobeselect(that.formatData, false);
-          }
-        };
-      });
+
     }
   };
 </script>
