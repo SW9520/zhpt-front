@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog title="角色维护" :visible.sync="dialogVisible" width="70%" :close-on-click-modal="false">
+    <el-dialog title="角色维护" :visible.sync="roleDialogVisible" width="70%" :close-on-click-modal="false">
       <el-form :model="roleForm" :rules="rules" ref="roleForm" label-width="280px" class="demo-ruleForm">
 
         <el-card class="box-card">
@@ -71,7 +71,7 @@
       }
     },
     props: {
-      dialogVisible: {
+      roleDialogVisible: {
         type: Boolean,
         default: false
       },
@@ -84,6 +84,10 @@
         handler: function(newValue, oldval) {
           this.role = newValue
           this.maintainType = '2'; //修改
+          $.extend(this.roleForm,this.role)
+          if(!this.roleForm.menuIds){
+            this.roleForm.menuIds = []
+          }
         },
         deep: true //深度监听
       },
@@ -114,6 +118,7 @@
           return
         }
         for (let node of nodes) {
+           console.log(node)
            this.roleForm.menuIds.push(node.id)
         }
 
@@ -168,6 +173,7 @@
         })
       },
       close() {
+        this.$refs.roleForm.resetFields()
         this.$parent.dialogVisible = false
       }
     }

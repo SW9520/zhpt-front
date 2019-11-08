@@ -1,3 +1,4 @@
+
 <template>
   <div>
    <!-- <div class="menuItem">
@@ -5,66 +6,86 @@
         <el-button type="text" @click="collapseChage" :icon="buttonIcon">{{buttonTxt}}</el-button>
       </div>
     </div> -->
-    <el-menu :style="{ height: clientHeight }" :default-active="activeIndex" class="el-menu-vertical-demo" @open="handleOpen"
-      @close="handleClose" :collapse="isCollapse" background-color="#E4E7EB" active-text-color="#ffd04b">
-      <el-submenu index="1">
-        <template slot="title">
-          <i class="el-icon-location"></i>
-          <span>导航一</span>
-        </template>
-        <el-menu-item-group>
-          <template slot="title">
-            分组一
+    <el-menu :style="{ height: clientHeight }" :default-active="activeIndex" class="el-menu-vertical-demo"
+     :collapse="isCollapse" background-color="#E4E7EB" active-text-color="#409EFF">
+
+      <template v-if="menuList.length > 0" v-for="(menu,index) in menuList"   >
+          <template v-if="menu.children !=null && menu.children != undefined">
+            <el-submenu :index="index.toString()" :key="menu.id">
+                <template slot="title">
+                  <i v-bind:class="menu.icon"></i>
+                  <span slot="title">{{menu.name}}</span>
+                </template>
+                <template v-for="(subMenu,subIndex) in menu.children">
+                   <template v-if="subMenu.children !=null && subMenu.children != undefined">
+                      <el-submenu :index="index.toString() + '-' + subIndex.toString()" :key="menu.id">
+                          <template slot="title">
+                            <i v-bind:class="subMenu.icon"></i>
+                            <span slot="title">{{subMenu.name}}</span>
+                          </template>
+                          <template v-for="(subMenu1,subIndex1) in subMenu.children">
+                              <el-menu-item  @click="selectMenu(menu)" :index="index.toString() + '-' + subIndex.toString()+ '-' + subIndex1" :key="subMenu1.id">
+                                <i v-bind:class="subMenu1.icon"></i>
+                                <span slot="title">{{subMenu1.name}}</span>
+                              </el-menu-item>
+                          </template>
+                       </el-submenu>
+                   </template>
+                   <template v-else>
+                     <el-menu-item :index="index.toString() + '-' + subIndex.toString()" :key="subMenu.id" @click="selectMenu(subMenu)">
+                       <i v-bind:class="subMenu.icon"></i>
+                       <span slot="title">{{subMenu.name}}</span>
+                     </el-menu-item>
+                   </template>
+                </template>
+            </el-submenu>
           </template>
-          <el-menu-item index="1-1">选项1</el-menu-item>
-          <el-menu-item index="1-2">选项2</el-menu-item>
-        </el-menu-item-group>
-        <el-menu-item-group title="分组2">
-          <el-menu-item index="1-3">选项3</el-menu-item>
-        </el-menu-item-group>
-        <el-submenu index="1-4">
-          <template slot="title">
-            选项4
+          <template v-else>
+            <el-menu-item :index="index.toString()" :key="menu.id" @click="selectMenu(menu)">
+              <i v-bind:class="menu.icon"></i>
+              <span slot="title">{{menu.name}}</span>
+            </el-menu-item>
           </template>
-          <el-menu-item index="1-4-1">选项1</el-menu-item>
-        </el-submenu>
-      </el-submenu>
-      <el-menu-item index="2">
-        <i class="el-icon-menu"></i>
-        <span slot="title">导航二</span>
-      </el-menu-item>
-      <el-menu-item index="3">
-        <i class="el-icon-document"></i>
-        <span slot="title">导航三</span>
-      </el-menu-item>
-      <el-menu-item index="4">
-        <i class="el-icon-setting"></i>
-        <span slot="title">菜单设置</span>
-      </el-menu-item>
-    </el-menu>
+
+      </template>
+      </el-menu>
   </div>
 </template>
 
 <script>
+  import {
+    mapMutations
+  } from 'vuex'
   export default {
     data() {
       return {
-        activeIndex: "1",
+        activeIndex: "0",
         clientHeight: '',
         isCollapse: false,
         buttonTxt: '收起侧边栏',
-        buttonIcon: 'el-icon-d-arrow-left'
+        buttonIcon: 'el-icon-d-arrow-left',
+        menuList: []
       }
     },
+    watch: {
+     '$store.state.menu.menuList':{
+        handler(newValue, oldValue) {
+          this.menuList = []
+          for (let item of newValue) {
+            this.menuList.push(item)
+          }
+          this.selectMenu(this.menuList[0])
+        },
+        deep:true
+      }
+
+    },
     methods: {
-      addTab() {
-        alert("333")
-      },
-      handleOpen() {
-
-      },
-      handleClose() {
-
+     ...mapMutations({
+        addSelectedMenuList:'addSelectedMenuList'
+     }),
+      selectMenu(menu){
+        this.addSelectedMenuList(menu)
       },
       collapseChage() {
         if (this.buttonTxt) {
@@ -84,6 +105,7 @@
     },
     mounted() {
       this.clientHeight = `${document.documentElement.clientHeight - 94}` + 'px';
+      this.menuList = this.$store.state.menu.menuList
     }
 
   }

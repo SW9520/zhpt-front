@@ -64,8 +64,8 @@ export default {
       height: '32.1rem',
       imgCodeUrl: '/zhpt-service/getImgCode',
       loginForm: {
-        userName: 'zhangsan',
-        password: '123456',
+        userName: '',
+        password: '',
         rememberMe: true,
         captcha: ''
       },

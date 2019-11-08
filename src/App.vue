@@ -1,7 +1,10 @@
 <template>
   <div id="index">
     <!--  <img src="./assets/logo.png" /> -->
-    <router-view />
+     <el-scrollbar style="height: 100%;">
+          <router-view   v-if="isRouterAlive"/>
+     </el-scrollbar>   
+  
   </div>
 </template>
 
@@ -10,6 +13,17 @@
 
   export default {
     name: 'app',
+    data () {
+       return {
+         isRouterAlive: true
+       }
+     },
+     methods: {
+       reload () {
+         this.isRouterAlive = false
+         this.$nextTick(() => (this.isRouterAlive = true))
+       }
+     },
     created() {
       if (sessionStorage.getItem("store")) { //页面加载前读取sessionStorage里的状态信息
         this.$store.replaceState(Object.assign({}, this.$store.state, JSON.parse(sessionStorage.getItem("store"))))

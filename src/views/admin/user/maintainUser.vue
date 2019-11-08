@@ -42,8 +42,9 @@
             <el-date-picker v-model="userForm.birthday" align="right" type="date"  value-format="yyyy-MM-dd" placeholder="选择日期" style="width: 400px;">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="所属部门：" prop="organId">
-            <el-input v-model="userForm.organId" class="el-input-width-400"></el-input>
+          <el-form-item label="所属部门：" prop="organIds">
+              <el-cascader placeholder="搜索：机构名称" :options="userForm.organId_options" filterable v-model="userForm.organIds"
+                change-on-select  size="mini" class="el-input-width-400"></el-cascader>
           </el-form-item>
 
           <el-form-item label="岗位：" prop="job">
@@ -55,7 +56,14 @@
           </el-form-item>
 
           <el-form-item label="角色权限：" prop="roleIds">
-            <el-input type="textArea" v-model="userForm.roleIds" class="el-input-width-400"></el-input>
+              <el-select v-model="userForm.roleIds" multiple placeholder="请选择"  size="mini" class="el-input-width-400">
+                <el-option
+                  v-for="item in userForm.roleId_options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
           </el-form-item>
 
           <el-form-item label="手机号码：" prop="phone">
@@ -74,6 +82,7 @@
 </template>
 
 <script>
+  const qs = require('qs');
   export default {
     data() {
       var validatePassConfirm = (rule, value, callback) => {
@@ -94,11 +103,14 @@
           passwordConfirm: '',
           isLocked: false,
           organId:'',
+          organIds:'',
+          organId_options:[],
           locked: 0,
           birthday: '',
           job: '',
           duty: '',
-          roleIds: '',
+          roleIds: [],
+          roleId_options:[],
           phone: '',
           avatar: '',
           id: ''
@@ -174,7 +186,13 @@
       }
     },
     mounted() {
-
+      var param = {}
+      this.$ajax.sendPostRequest("ZHPT_LIST_ORGAN", param, res => {
+        this.userForm.organId_options = this.$api.formatTreeSelectData(res.data.data)
+      })
+      this.$ajax.sendPostRequest("ZHPT_LIST_PAGED_ROLE", param, res => {
+         this.userForm.roleId_options = this.$api.formatTreeSelectData(res.data.data)
+      })
     },
     methods: {
       handleAvatarSuccess(res, file) {
@@ -198,6 +216,8 @@
           if (!valid) {
             return
           }
+          this.userForm.organId = this.userForm.organIds[0]
+
           if (this.maintainType == '1') {
             this.addUser();
           } else {
@@ -223,7 +243,7 @@
         })
       },
       editUser() {
-        this.$ajax.sendPostRequest("ZHPT_UPDATE_USER", this.userForm, (response) => {
+        this.$ajax.sendPostRequest("ZHPT_UPDATE_USER",this.userForm, (response) => {
           if (response.data.status == 'success') {
             this.$message({
               message: '修改成功',

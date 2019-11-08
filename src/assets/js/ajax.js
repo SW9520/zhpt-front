@@ -16,11 +16,14 @@ const serviceUrl = {
   'ZHPT_LOGIN': '/zhpt-service/login',
   'ZHPT_LOGIN_OUT': '/zhpt-service/logout',
   'ZHPT_LOGIN_REMEMBER_ME': '/zhpt-service/loginWithRememberMe',
-   'ZHPT_LIST_MENU': '/zhpt-service/admin/menu/listMenu',
+  'ZHPT_LIST_MENU': '/zhpt-service/admin/menu/listMenu',
   'ZHPT_LIST_TOP_MENU': '/zhpt-service/admin/menu/listTopMenu',
+  'ZHPT_LIST_LEFT_MENU': '/zhpt-service/admin/menu/getMenuByRootIdAndUser',
+
   'ZHPT_INSERT_MENU': '/zhpt-service/admin/menu/insertMenu',
   'ZHPT_UPDATE_MENU': '/zhpt-service/admin/menu/updateMenu',
   'ZHPT_DELETE_MENU': '/zhpt-service/admin/menu/deleteMenu',
+
   'ZHPT_INSERT_USER': '/zhpt-service/admin/user/insertUser',
   'ZHPT_UPDATE_USER': '/zhpt-service/admin/user/updateUser',
   'ZHPT_LIST_PAGED_USER': '/zhpt-service/admin/user/listPagedUser',
@@ -28,6 +31,11 @@ const serviceUrl = {
   'ZHPT_INSERT_ROLE': '/zhpt-service/admin/role/insertRole',
   'ZHPT_UPDATE_ROLE': '/zhpt-service/admin/role/updateRole',
   'ZHPT_DELETE_ROLE': '/zhpt-service/admin/role/deleteRole',
+
+  'ZHPT_LIST_ORGAN': '/zhpt-service/admin/organ/listOrgan',
+  'ZHPT_INSERT_ORGAN': '/zhpt-service/admin/organ/insertOrgan',
+  'ZHPT_UPDATE_ORGAN': '/zhpt-service/admin/organ/updateOrgan',
+  'ZHPT_DELETE_ORGAN': '/zhpt-service/admin/organ/deleteOrgan',
 }
 
 

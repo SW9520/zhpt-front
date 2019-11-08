@@ -22,10 +22,10 @@
         <el-button type="danger" @click="delRole()">删除</el-button>
       </el-row>
       <el-row >
-           <grid  :columns="tableColmns" :check="true" :paging="false" :dataList="tableData">  </grid>
+           <grid ref="grid"  :columns="tableColmns" :check="true" :paging="false" :dataList="tableData">  </grid>
       </el-row>
     </div>
-   <maintainRole :dialogVisible="dialogVisible" :role="role"></maintainRole>
+   <maintainRole :roleDialogVisible="dialogVisible" :role="role"></maintainRole>
   </div>
 
 </template>
@@ -87,6 +87,14 @@
         this.dialogVisible = true
       },
       editRole() {
+        if(this.$refs.grid.selectedRow.length === 0){
+          this.$message({message:"请选择需要修改数据",type:"warning"})
+          return
+        }else if(this.$refs.grid.selectedRow.length > 1){
+          this.$message({message:"只能选择一条数据",type:"warning"})
+          return
+        }
+        this.role = this.$refs.grid.selectedRow[0]
         this.dialogVisible = true
       },
       delRole() {},

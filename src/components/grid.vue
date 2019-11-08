@@ -1,6 +1,8 @@
 <template>
   <div>
-    <el-table ref="table" :data="tableData" border fit stripe :highlight-current-row="true" :header-cell-style="headerStyle">
+    <el-table ref="table" :data="tableData" border fit stripe :highlight-current-row="true" :header-cell-style="headerStyle"
+       @selection-change="handleSelectionChange"
+    >
       <el-table-column v-if="check == true" :width="40" type="selection">
       </el-table-column>
 
@@ -27,7 +29,8 @@
       return {
         totalSize: 0,
         currentPage: 0,
-        pageSize: 0
+        pageSize: 0,
+        selectedRow:[]
       }
     },
     props: {
@@ -51,6 +54,9 @@
       },
     },
     methods: {
+      handleSelectionChange(val){
+        this.selectedRow = val
+      },
       headerStyle(row, rowIndex) {
 
         return "background-color:#409EFF;color:#fff"

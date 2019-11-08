@@ -17,7 +17,7 @@
 
         <el-col :span="6">
           <el-form-item label="角色:">
-            <el-input v-model="userForm.roleIds"></el-input>
+            <el-input v-model="userForm.roleNames"></el-input>
           </el-form-item>
         </el-col>
       </el-row>

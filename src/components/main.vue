@@ -1,56 +1,63 @@
 <template>
   <div>
-    <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick" :closable="true" @tab-remove="handleTabsEdit">
-      <el-tab-pane label="菜单管理" name="first">
-        <menuManage></menuManage>
+    <el-tabs  type="border-card" closable  v-model="activeName" @tab-click="handleClick" :closable="true"  @tab-remove="removeTab">
+      <el-tab-pane label="首页" name="home" :closable="false" class="el-tab-custom">
+          <h4>我是首页</h4>
       </el-tab-pane>
-      <el-tab-pane label="用户管理" name="second">
-        <userManage></userManage>
-      </el-tab-pane>
-      <el-tab-pane label="角色管理" name="three">
-        <roleManage></roleManage>
-      </el-tab-pane>
-      <el-tab-pane label="部门管理" name="four">
-         <organManage></organManage>
-      </el-tab-pane>
+      <el-tab-pane v-for="(tab,index) in tabs" :key="tab.id"  :name="'tab_'+ tab.id" class="el-tab-custom">
        
+         <span slot="label"><i v-bind:class="tab.icon"></i> {{tab.name}}</span>
+        <component v-if="tab.href != null" :is='tab.href'></component>
+        <div v-else>
+          <h2>功能正在开发中</h2>
+        </div>
+      </el-tab-pane>
+
 
     </el-tabs>
   </div>
 </template>
 
 <script>
-  import $ from 'jquery';
-
+  import store from '@/store'
   export default {
+    created() {
 
+      this.tabs = this.$store.state.menu.selectedMenuList
+    },
     mounted() {
-      $(".el-tab-pane").height(`${document.documentElement.clientHeight -160}`)
+      $(".el-tab-custom").height(`${document.documentElement.clientHeight -160}`)
+    },
+    filters: {
+
     },
     data() {
       return {
-        activeName: 'four',
+        activeName: '',
+        tabs: []
+      }
+    },
+    watch: {
+      '$store.state.menu.showTab': {
+        handler(newValue, oldValue) {
+          this.activeName = 'tab_' + newValue.id
+        },
+        deep: true
       }
     },
     methods: {
       handleClick(tab, event) {
         console.log(tab, event)
       },
-      handleTabsEdit(targetName, action) {
-        if (action === 'remove') {
-          let tabs = this.editableTabs
-          let activeName = this.editableTabsValue
-          if (activeName === targetName) {
-            tabs.forEach((tab, index) => {
-              if (tab.name === targetName) {
-                let nextTab = tabs[index + 1] || tabs[index - 1]
-                if (nextTab) {
-                  activeName = nextTab.name
-                }
-              }
-            })
-          }
+      removeTab(targetName) {
+        var tab = this.tabs.filter((item)=>{
+          return 'tab_' + item.id == targetName
+        })
+        if(this.tabs.length === 1){
+          this.activeName = 'home'
         }
+        store.dispatch('deleteSelectedMenu',tab[0])
+
       }
     }
   }
@@ -65,8 +72,10 @@
   .el-tabs-content {
     padding: 5px !important;
   }
-
-  /* .el-tab-pane  {
+  .el-tab-custom {
+    overflow-y: auto;
+  }
+ /* .el-tab-pane  {
     height: 630px!important;
   } */
 </style>

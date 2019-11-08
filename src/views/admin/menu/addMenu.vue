@@ -117,7 +117,6 @@
       var param = {}
       this.$ajax.sendPostRequest("ZHPT_LIST_MENU", param, res => {
         this.options = this.$api.formatTreeSelectData(res.data.data)
-        console.log(this.options)
       })
     },
     methods: {
