@@ -20,6 +20,7 @@ route.install = function(vue) {
         require.ensure([], () => resolve(require('@/components/main.vue')), 'mainBar')
     })
 
+    /* admin  module*/
     vue.component('menuManage', (resolve) => {
         require.ensure([], () => resolve(require('@/views/admin/menu/menuManage.vue')), 'menuManage')
     })
@@ -40,6 +41,22 @@ route.install = function(vue) {
     })
 
 
+    /* helper module */
+    vue.component('mailList', (resolve) => {
+        require.ensure([], () => resolve(require('@/views/helper/mail/mailList.vue')), 'mailList')
+    })
+
+    vue.component('sendMail', (resolve) => {
+        require.ensure([], () => resolve(require('@/views/helper/mail/sendMail.vue')), 'sendMail')
+    })
+
+
+
+
+
+
+
+
     /* 自定义 页面展示组件*/
     vue.component('tip', (resolve) => {
         require.ensure([], () => resolve(require('@/components/tip.vue')), 'tip')
@@ -51,6 +68,10 @@ route.install = function(vue) {
 
     vue.component('menuTree', (resolve) => {
         require.ensure([], () => resolve(require('@/views/admin/components/menuTree.vue')), 'menuTree')
+    })
+
+    vue.component('editor', (resolve) => {
+        require.ensure([], () => resolve(require('@/components/ue-editor/editor.vue')), 'editor')
     })
 }
 

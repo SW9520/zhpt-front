@@ -1,11 +1,12 @@
 <template>
   <div>
-    <el-tabs  type="border-card" closable  v-model="activeName" @tab-click="handleClick" :closable="true"  @tab-remove="removeTab">
+    <el-tabs  type="border-card" closable  v-model="activeName" :closable="true"  @tab-remove="removeTab">
       <el-tab-pane label="首页" name="home" :closable="false" class="el-tab-custom">
-          <h4>我是首页</h4>
+          <h4>我是首页{{tabs.length}}</h4>
       </el-tab-pane>
-      <el-tab-pane v-for="(tab,index) in tabs" :key="tab.id"  :name="'tab_'+ tab.id" class="el-tab-custom">
-       
+
+      <el-tab-pane v-if=" tabs.length> 0" v-for="(tab,index) in tabs" :key="tab.id"  :name="'tab_'+ tab.id" class="el-tab-custom">
+
          <span slot="label"><i v-bind:class="tab.icon"></i> {{tab.name}}</span>
         <component v-if="tab.href != null" :is='tab.href'></component>
         <div v-else>
@@ -22,33 +23,39 @@
   import store from '@/store'
   export default {
     created() {
-
-      this.tabs = this.$store.state.menu.selectedMenuList
     },
     mounted() {
       $(".el-tab-custom").height(`${document.documentElement.clientHeight -160}`)
+      this.tabs = this.$store.state.menu.tabList
     },
     filters: {
 
     },
     data() {
       return {
-        activeName: '',
+        activeName: 'home',
         tabs: []
       }
     },
     watch: {
       '$store.state.menu.showTab': {
         handler(newValue, oldValue) {
-          this.activeName = 'tab_' + newValue.id
+          if(newValue && newValue.id){
+             this.activeName = 'tab_' + newValue.id
+          }else{
+            this.activeName = 'home'
+          }
+        },
+        deep: true
+      },
+      '$store.state.menu.tabList': {
+        handler(newValue, oldValue) {
+          this.tabs = newValue;
         },
         deep: true
       }
     },
     methods: {
-      handleClick(tab, event) {
-        console.log(tab, event)
-      },
       removeTab(targetName) {
         var tab = this.tabs.filter((item)=>{
           return 'tab_' + item.id == targetName
@@ -56,7 +63,7 @@
         if(this.tabs.length === 1){
           this.activeName = 'home'
         }
-        store.dispatch('deleteSelectedMenu',tab[0])
+        store.dispatch('removeTab',tab[0])
 
       }
     }

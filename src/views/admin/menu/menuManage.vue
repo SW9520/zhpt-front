@@ -13,17 +13,16 @@
     </el-card>
 
     <!-- 新增-->
-    <addMenu :dialogVisible="addMenuVisible"></addMenu>
+    <maintainMenu  :menuDialogVisible="maintainMenuVisible" :menu="menu"></maintainMenu>
   </div>
 
 </template>
 <script>
-  import addMenu from './addMenu.vue'
-  import $ from 'jquery';
+  import maintainMenu from './maintainMenu.vue'
 
   export default {
     components: {
-      addMenu
+      maintainMenu
     },
     mounted() {
       $(".main").height(`${document.documentElement.clientHeight -245}`)
@@ -31,7 +30,8 @@
     },
     data() {
       return {
-        addMenuVisible: false,
+        maintainMenuVisible: false,
+        menu:{},
         tableData: {
           columns: [{
               text: "名称",
@@ -65,9 +65,25 @@
     },
     methods: {
       addMenu() {
-        this.addMenuVisible = true
+        this.maintainMenuVisible = true
       },
       editMenu() {
+        let selectRows = this.$refs.treeTable.getCheckedRow();
+
+        if(selectRows.length > 1){
+         this.$alert('<i class="el-icon-error" style="color:#F56C6C;font-size:20px"></i> 只能选择一条数据', "提示",{
+           dangerouslyUseHTMLString: true
+         })
+          return;
+        }
+        if(!selectRows || selectRows.length == 0){
+          this.$alert('<i class="el-icon-error" style="color:#F56C6C;font-size:20px"></i> 请选择数据', "提示",{
+          dangerouslyUseHTMLString: true
+        })
+          return;
+        }
+        this.menu = selectRows[0]
+        this.maintainMenuVisible = true
 
       },
       delMenu() {

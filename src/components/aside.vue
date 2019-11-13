@@ -6,8 +6,8 @@
         <el-button type="text" @click="collapseChage" :icon="buttonIcon">{{buttonTxt}}</el-button>
       </div>
     </div> -->
-    <el-menu :style="{ height: clientHeight }" :default-active="activeIndex" class="el-menu-vertical-demo"
-     :collapse="isCollapse" background-color="#E4E7EB" active-text-color="#409EFF">
+    <el-menu :style="{ height: clientHeight }"    class="el-menu-vertical-demo"
+     :collapse="isCollapse" background-color="#E4E7EB">
 
       <template v-if="menuList.length > 0" v-for="(menu,index) in menuList"   >
           <template v-if="menu.children !=null && menu.children != undefined">
@@ -68,24 +68,30 @@
       }
     },
     watch: {
-     '$store.state.menu.menuList':{
+    '$store.state.menu.menuList':{
         handler(newValue, oldValue) {
           this.menuList = []
-          for (let item of newValue) {
-            this.menuList.push(item)
+          if(newValue){
+            for (let item of newValue) {
+              this.menuList.push(item)
+            }
+            //默认选一个目录
+            //this.selectMenu(this.menuList[0])
+            this.activeIndex = "0"
           }
-          this.selectMenu(this.menuList[0])
         },
         deep:true
       }
 
     },
+    updated() {
+    },
     methods: {
      ...mapMutations({
-        addSelectedMenuList:'addSelectedMenuList'
+        addTab:'addTab'
      }),
       selectMenu(menu){
-        this.addSelectedMenuList(menu)
+        this.addTab(menu)
       },
       collapseChage() {
         if (this.buttonTxt) {

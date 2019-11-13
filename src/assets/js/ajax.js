@@ -36,6 +36,9 @@ const serviceUrl = {
   'ZHPT_INSERT_ORGAN': '/zhpt-service/admin/organ/insertOrgan',
   'ZHPT_UPDATE_ORGAN': '/zhpt-service/admin/organ/updateOrgan',
   'ZHPT_DELETE_ORGAN': '/zhpt-service/admin/organ/deleteOrgan',
+
+  'ZHPT_SEND_MAIL': '/zhpt-service/helper/mail/sendEMail',
+
 }
 
 
@@ -66,10 +69,11 @@ axios.interceptors.response.use(
       EXResolve(response.data.code, response.data.msg)
     }else{
       if(response.data.msg){
-         Message({
+        /* Message({
               message: response.data.msg,
               type: 'success'
-            });
+            }); */
+            successResolve(response.data.msg)
       }
 
     }
@@ -86,10 +90,14 @@ axios.interceptors.response.use(
 );
 
 function EXResolve(EXCode, errMsg) {
+  let msg =  '<i class="el-icon-error" style="color:#F56C6C;font-size:20px"></i><span style="color:#F56C6C">  【' +EXCode +"】" + errMsg +
+    "</span>"
 
-  MessageBox.alert(
-    '<i class="el-icon-error" style="color:#F56C6C;font-size:20px"></i><span style="color:#F56C6C">  【' +EXCode +"】" + errMsg +
-    "</span>", {
+  if(!EXCode){
+    msg =  '<i class="el-icon-error" style="color:#F56C6C;font-size:20px"></i><span style="color:#F56C6C"> ' + errMsg +
+      "</span>"
+  }
+  MessageBox.alert( msg, {
       dangerouslyUseHTMLString: true,
       showClose: false,
       callback: action => {
@@ -109,6 +117,17 @@ function EXResolve(EXCode, errMsg) {
     })
 
 }
+
+function successResolve(msg){
+  MessageBox.alert(
+    '<i class="el-icon-success" style="font-size:20px;color:#67C23A"></i><span>  ' + msg +
+    "</span>", {
+      dangerouslyUseHTMLString: true,
+      showClose: false
+    })
+}
+
+
 
 var ajax = axios.create()
 ajax.$store = store

@@ -37,7 +37,7 @@
         <el-button type="danger" @click="delUser()">删除</el-button>
       </el-row>
       <el-row >
-           <grid  :columns="tableColmns" :check="true" :paging="true" :pageInfo="pageInfo" @pageSizeChange="handlePageSizeChange" @pageChange="handlePageChange">  </grid>
+           <grid ref="userGrid" :columns="tableColmns" :check="true" :paging="true" :pageInfo="pageInfo" @pageSizeChange="handlePageSizeChange" @pageChange="handlePageChange">  </grid>
       </el-row>
     </div>
 
@@ -111,6 +111,21 @@
         this.dialogVisible = true
       },
       editUser() {
+       let selectRows = this.$refs.userGrid.selectedRow;
+       if(selectRows.length > 1){
+        this.$alert('<i class="el-icon-error" style="color:#F56C6C;font-size:20px"></i> 只能选择一条数据', "提示",{
+          dangerouslyUseHTMLString: true
+        })
+         return;
+       }
+       if(!selectRows || selectRows.length == 0){
+         this.$alert('<i class="el-icon-error" style="color:#F56C6C;font-size:20px"></i> 请选择数据', "提示",{
+         dangerouslyUseHTMLString: true
+       })
+         return;
+       }
+      this.user = selectRows[0]
+
         this.dialogVisible = true
       },
       delUser() {},

@@ -1,3 +1,4 @@
+
 <template>
   <div>
     <el-carousel :height="height" :interval="6000">
@@ -147,11 +148,6 @@ export default {
                 localStorage.setItem(_that.$api.key.LOGIN_NAME_COOKIE,jsonData.userName)
                 _that.storeLogin(response.data.data)
                 _that.initWebSocket()
-                _that.$message({
-                  showClose: true,
-                  message: "登录成功",
-                  type: 'success'
-                })
               } else {
                 _that.$message({
                   showClose: true,
@@ -207,11 +203,6 @@ export default {
             _that.storeLogin(response.data.data)
             _that.$router.push({
               name: 'home'
-            })
-            _that.$message({
-              showClose: true,
-              message: "登录成功",
-              type: 'success'
             })
              _that.initWebSocket()
           } else {

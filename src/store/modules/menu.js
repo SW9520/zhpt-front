@@ -2,61 +2,63 @@ const menu = {
   state: {
     menuList: [],
     showTab: {},
-    selectedMenuList:[]
+    tabList:[]
   },
   mutations: {
     loadMenuList(state,menuDataList){
       state.menuList = menuDataList
+      state.tabList = []
+      state.showTab = {}
     },
-    addSelectedMenuList(state, data) {
+    addTab(state, data) {
       let isAdd = true
-      for (let i = 0; i < state.selectedMenuList.length; i++) {
-        if (state.selectedMenuList[i].name === data.name) {
+      for (let i = 0; i < state.tabList.length; i++) {
+        if (state.tabList[i].name === data.name) {
           isAdd = false
           state.showTab = data
         }
       }
       if (isAdd) {
-        state.selectedMenuList.push(data)
+        state.tabList.push(data)
         state.showTab = data
       }
     },
-    deleteSelectedMenu(state, data) {
+    deleteTab(state, data) {
       let index
-      for (let i = 0; i < state.selectedMenuList.length; i++) {
-        if (state.selectedMenuList[i].name === data.name) {
-          state.selectedMenuList.splice(i, 1)
+      for (let i = 0; i < state.tabList.length; i++) {
+        if (state.tabList[i].name === data.name) {
+          state.tabList.splice(i, 1)
           index = i
         }
       }
       var _that = data.vm
       if (data.name === state.showTab.name) {
         if (index === 0) {
-          state.showTab = state.selectedMenuList[index]
+          state.showTab = state.tabList[index]
           if (_that != undefined) {
             _that.$router.push({
-              path: state.selectedMenuList[index].path
+              path: state.tabList[index].path
             })
           }
         } else {
-          state.showTab = state.selectedMenuList[index - 1];
+          state.showTab = state.tabList[index - 1];
           if (_that != undefined) {
             _that.$router.push({
-              path: state.selectedMenuList[index - 1].path
+              path: state.tabList[index - 1].path
             })
           }
         }
       }
     },
-    resetMenu(state){
+    resetMenu(state,resolve){
       state.menuList = []
       state.showTab = {}
-      state.selectedMenuList = []
+      state.tabList = []
     }
   },
   actions: {
-      deleteSelectedMenu(context,data){
-        context.commit('deleteSelectedMenu',data)
+      removeTab(context,data){
+        context.commit('deleteTab',data)
       }
   },
   getters: {

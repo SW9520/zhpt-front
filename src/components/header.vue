@@ -4,7 +4,7 @@
       <el-col :span="4">
         <div style="width:250px;">
           <b style="color: white;">
-              智慧生活 智能服务</b>
+             EASY LIFE </b>
         </div>
        </el-col>
        <el-col :span="18">
@@ -45,7 +45,7 @@
   export default {
     data() {
       return {
-        activeIndex: '1',
+        activeIndex: '0',
         user: {},
         avatar: 'data:image/png;base64,',
         topMenu:[]
@@ -57,7 +57,7 @@
       this.$ajax.sendPostRequest("ZHPT_LIST_TOP_MENU", param, res => {
         this.topMenu = res.data.data
         this.activeIndex = '0'
-        this.loadLeftMenu(this.topMenu[0].id)
+        this.loadLeftMenu(this.topMenu[0].id)  //默认加载左侧菜单
       })
     },
     computed: {
@@ -79,18 +79,12 @@
         this.$ajax.sendPostRequest("ZHPT_LIST_LEFT_MENU", param, res => {
           if(res.data.data){
               this.loadMenuList(res.data.data.children)
-
           }
-
         })
       },
       logout() {
         this.$ajax.sendPostRequest("ZHPT_LOGIN_OUT", {},(res) => {
           if (res.data.status == "success") {
-            this.$message({
-              message: res.data.msg ,
-              type: 'success'
-            });
             window.sessionStorage.clear()
             this.storeLogout()
             this.resetMenu()

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog title="用户维护" :visible.sync="dialogVisible" width="70%" :close-on-click-modal="false">
+    <el-dialog title="用户维护" :visible.sync="dialogVisible" width="70%" @open="initData()" :close-on-click-modal="false">
       <el-form :model="userForm" :rules="rules" ref="userForm" label-width="280px" class="demo-ruleForm">
         <tip>
           <p>登录账号</p>
@@ -171,7 +171,8 @@
     watch: {
       user: {
         handler: function(newValue, oldval) {
-          this.user = newValue
+          $.extend(this.userForm,newValue)
+          this.userForm.passwordConfirm = this.userForm.password
           this.maintainType = '2'; //修改
         },
         deep: true //深度监听
@@ -195,6 +196,9 @@
       })
     },
     methods: {
+      initData(){
+
+      },
       handleAvatarSuccess(res, file) {
         this.imageUrl = URL.createObjectURL(file.raw);
         this.userForm.avatar = res;
