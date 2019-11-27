@@ -71,6 +71,7 @@
 </template>
 
 <script>
+  import {extend} from '../../../utils/validate.js'
   export default {
     data() {
       return {
@@ -127,7 +128,10 @@
     watch: {
       menu: {
         handler(newValue, oldValue) {
-          $.extend(this.menuForm, newValue)
+         for (var p in newValue) {
+           if (newValue.hasOwnProperty(p) && this.menuForm.hasOwnProperty(p))
+             this.menuForm[p] = newValue[p];
+         }
           this.maintainType = 2
         },
         deep: true
@@ -149,8 +153,8 @@
             shiroPermissions = shiroPermissions.substring(0, shiroPermissions.lastIndexOf(";"))
             this.menuForm.shiroPermissions = shiroPermissions
           }
-          if(this.menuForm.parentId){
-              this.menuForm.parentId = this.menuForm.parentId[this.menuForm.parentId.length-1];
+          if (this.menuForm.parentId) {
+            this.menuForm.parentId = this.menuForm.parentId[this.menuForm.parentId.length - 1];
           }
           this.menuForm.isShow = this.menuForm.isShow_boolean == true ? '1' : '0'
           if (this.maintainType == 1) {
@@ -160,35 +164,17 @@
           }
         })
       },
-      updateMenu(){
+      updateMenu() {
         this.$ajax.sendPostRequest("ZHPT_UPDATE_MENU", this.menuForm, (response) => {
           if (response.data.status == 'success') {
-            this.$message({
-              message: '修改成功',
-              type: 'success'
-            });
             this.close()
-          } else {
-            this.$message({
-              message: '修改失败',
-              type: 'error'
-            });
           }
         })
       },
       addMenu() {
         this.$ajax.sendPostRequest("ZHPT_INSERT_MENU", this.menuForm, (response) => {
           if (response.data.status == 'success') {
-            this.$message({
-              message: '新增成功',
-              type: 'success'
-            });
             this.close()
-          } else {
-            this.$message({
-              message: '新增失败',
-              type: 'error'
-            });
           }
         })
       },

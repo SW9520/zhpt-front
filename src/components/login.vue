@@ -149,11 +149,6 @@ export default {
                 _that.storeLogin(response.data.data)
                 _that.initWebSocket()
               } else {
-                _that.$message({
-                  showClose: true,
-                  message: response.data.msg || '用户名或密码错误',
-                  type: 'error'
-                })
                 _that.changeImgCode()
               }
             },

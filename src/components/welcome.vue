@@ -23,7 +23,7 @@ export default {
     created: function() {
         var p = 0;
         this.$router.push({ name: 'login' });
-      /* let timer = setInterval(() => {
+   /*   let timer = setInterval(() => {
             $('.el-progress-bar__outer').css('border-radius', '0px');
             $('.el-progress-bar__inner').css('border-radius', '0px');
             p = p + 1;

@@ -19,6 +19,7 @@ const serviceUrl = {
   'ZHPT_LIST_MENU': '/zhpt-service/admin/menu/listMenu',
   'ZHPT_LIST_TOP_MENU': '/zhpt-service/admin/menu/listTopMenu',
   'ZHPT_LIST_LEFT_MENU': '/zhpt-service/admin/menu/getMenuByRootIdAndUser',
+  'ZHPT_LIST_TREEMENU_BY_ROLE_ID': '/zhpt-service/admin/menu/listTreeMenuByRoleId',
 
   'ZHPT_INSERT_MENU': '/zhpt-service/admin/menu/insertMenu',
   'ZHPT_UPDATE_MENU': '/zhpt-service/admin/menu/updateMenu',
@@ -27,10 +28,13 @@ const serviceUrl = {
   'ZHPT_INSERT_USER': '/zhpt-service/admin/user/insertUser',
   'ZHPT_UPDATE_USER': '/zhpt-service/admin/user/updateUser',
   'ZHPT_LIST_PAGED_USER': '/zhpt-service/admin/user/listPagedUser',
+
   'ZHPT_LIST_PAGED_ROLE': '/zhpt-service/admin/role/listRole',
   'ZHPT_INSERT_ROLE': '/zhpt-service/admin/role/insertRole',
   'ZHPT_UPDATE_ROLE': '/zhpt-service/admin/role/updateRole',
   'ZHPT_DELETE_ROLE': '/zhpt-service/admin/role/deleteRole',
+  'ZHPT_DELETE_ROLE_BATCH': '/zhpt-service/admin/role/deleteRoleBatch',
+
 
   'ZHPT_LIST_ORGAN': '/zhpt-service/admin/organ/listOrgan',
   'ZHPT_INSERT_ORGAN': '/zhpt-service/admin/organ/insertOrgan',
@@ -141,7 +145,7 @@ ajax.$store = store
 ajax.sendPostRequest = function(serviceId, params, success, error) {
   if (serviceUrl.hasOwnProperty(serviceId)) {
     return new Promise((resolve, reject) => {
-      axios.post(serviceUrl[serviceId], qs.stringify(params))
+      axios.post(serviceUrl[serviceId], qs.stringify(params, { indices: false }))
         .then(res => {
           resolve(res)
         })

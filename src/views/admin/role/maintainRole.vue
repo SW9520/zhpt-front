@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog title="角色维护" :visible.sync="roleDialogVisible" width="70%" :close-on-click-modal="false">
+    <el-dialog title="角色维护" :visible.sync="roleDialogVisible" width="70%" :close-on-click-modal="false" @close="close()">
       <el-form :model="roleForm" :rules="rules" ref="roleForm" label-width="280px" class="demo-ruleForm">
 
         <el-card class="box-card">
@@ -30,8 +30,8 @@
         </el-card>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="close">取 消</el-button>
-        <el-button type="primary" @click="submitRole">确 定</el-button>
+        <el-button @click="close()">取 消</el-button>
+        <el-button type="primary" @click="submitRole()">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -46,6 +46,7 @@
       return {
         maintainType: "1", // 1 新增 2 修改
         roleForm: {
+          id:'',
           name: '',
           identify: '',
           dataScope: '',
@@ -72,8 +73,7 @@
     },
     props: {
       roleDialogVisible: {
-        type: Boolean,
-        default: false
+        type: Boolean
       },
       role: {
         type: Object
@@ -82,12 +82,27 @@
     watch: {
       role: {
         handler: function(newValue, oldval) {
-          this.role = newValue
-          this.maintainType = '2'; //修改
-          $.extend(this.roleForm,this.role)
-          if(!this.roleForm.menuIds){
-            this.roleForm.menuIds = []
+          let _this = this
+          _this.role = newValue
+          if(this.role.useable == 0){
+            this.roleForm.useable_boolean = false
+          }else{
+               this.roleForm.useable_boolean = true
           }
+          _this.maintainType = '2'; //修改
+          $.extend(_this.roleForm,_this.role)
+          _this.$ajax.sendPostRequest('ZHPT_LIST_TREEMENU_BY_ROLE_ID',{roleId:_this.roleForm.id},(res)=>{
+            window.setTimeout(function(){
+              let menus=res.data.data
+              let ztreeObj = _this.$refs['menuTreeObj'].getTreeObj()
+              for (let menu of menus) {
+                let node = ztreeObj.getNodeByParam("id",menu.id)
+                 ztreeObj.checkNode(node, true, true);
+                 ztreeObj.expandNode(node, true, true, true);
+              }
+            },500)
+
+          })
         },
         deep: true //深度监听
       },
@@ -117,6 +132,7 @@
           });
           return
         }
+       this.roleForm.menuIds = []
         for (let node of nodes) {
            console.log(node)
            this.roleForm.menuIds.push(node.id)
@@ -143,38 +159,20 @@
       addRole() {
         this.$ajax.sendPostRequest("ZHPT_INSERT_ROLE", this.roleForm, (response) => {
           if (response.data.status == 'success') {
-            this.$message({
-              message: '新增成功',
-              type: 'success'
-            });
             this.close()
-          } else {
-            this.$message({
-              message: '新增失败',
-              type: 'error'
-            });
           }
         })
       },
       editRole() {
         this.$ajax.sendPostRequest("ZHPT_UPDATE_ROLE", this.roleForm, (response) => {
           if (response.data.status == 'success') {
-            this.$message({
-              message: '修改成功',
-              type: 'success'
-            });
             this.close()
-          } else {
-            this.$message({
-              message: '修改成功',
-              type: 'error'
-            });
-          }
+          } 
         })
       },
       close() {
-        this.$refs.roleForm.resetFields()
-        this.$parent.dialogVisible = false
+        this.$refs['roleForm'].resetFields()
+        this.$parent.roleDialogVisible = false
       }
     }
   }

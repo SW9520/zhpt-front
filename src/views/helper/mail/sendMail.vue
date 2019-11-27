@@ -69,7 +69,6 @@
             this.mailForm.mailType = "2"
          }
           this.$ajax.sendPostRequest("ZHPT_SEND_MAIL",this.mailForm,(res)=>{
-
         })
 
       },

@@ -1,6 +1,7 @@
 const route = {}
 route.install = function(vue) {
 
+    /* login module*/
     vue.component('welcome', (resolve) => {
         require.ensure([], () => resolve(require('@/components/welcome.vue')), 'welcome')
     })
@@ -50,9 +51,16 @@ route.install = function(vue) {
         require.ensure([], () => resolve(require('@/views/helper/mail/sendMail.vue')), 'sendMail')
     })
 
+  vue.component('smsBoom', (resolve) => {
+      require.ensure([], () => resolve(require('@/views/helper/sms/smsBoom.vue')), 'smsBoom')
+  })
 
 
 
+    /* home module*/
+    vue.component('index', (resolve) => {
+        require.ensure([], () => resolve(require('@/views/home/index.vue')), 'index')
+    })
 
 
 
