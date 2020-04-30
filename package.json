@@ -39,7 +39,7 @@
     "axios": "^0.19.0",
     "element-ui": "^2.11.1",
     "font-awesome": "^4.7.0",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "js-md5": "^0.7.3",
     "nw": "^0.41.2-sdk",
     "portfinder": "^1.0.24",
